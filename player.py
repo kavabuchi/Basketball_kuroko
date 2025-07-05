@@ -21,9 +21,15 @@ class Player:
     def count_coef(self):
         stats = self.position_stats[self.position]
         skill_sum = 0
-
+        #stats = {"speed": 0.8, "dribble": 0.7, "pass": 0.6, "shot": 0.9}
+        #self.skill= 100
         for key in stats:
             skill_sum += stats[key] * self.skill
+            #skill_sum +=  0.8(speed) * 100 | 80
+            #skill_sum +=  0.7(dribble) * 100 | 80+ 70 = 150
+
+        #skill_sum = 300
+        #self.palyer_coef = 300 * (1-0.3) | 210
         self.palyer_coef = skill_sum * (1 - self.fatigue)
         
     def __str__(self):
@@ -31,7 +37,7 @@ class Player:
 
 
 if __name__ == "__main__":
-    player1 = Player("Koby Bryant", 25, "Point_Guard", 0.3, 90, 10000)
+    player1 = Player("Koby Bryant", 25, "Point_Guard", 0.3, 100, 10000)
     player2 = Player("Lebron James", 25, "Shooting_Guard", 0.4, 92, 15000)
     
     print(player1)
