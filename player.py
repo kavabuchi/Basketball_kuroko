@@ -15,22 +15,26 @@ class Player:
         self.fatigue = fatigue
         self.skill = skill
         self.price = price
-        self.palyer_coef = 0
+        self.player_coef = 0
         self.count_coef()
     
     def count_coef(self):
         stats = self.position_stats[self.position]
         skill_sum = 0
+
         #stats = {"speed": 0.8, "dribble": 0.7, "pass": 0.6, "shot": 0.9}
-        #self.skill= 100
+        #self.skill = 100
+        
         for key in stats:
             skill_sum += stats[key] * self.skill
-            #skill_sum +=  0.8(speed) * 100 | 80
-            #skill_sum +=  0.7(dribble) * 100 | 80+ 70 = 150
+
+            #skill_sum += 0.8(speed) * 100 | 80
+            #skill_sum += 0.7(dribble) * 100 | 80 + 70 = 150
 
         #skill_sum = 300
-        #self.palyer_coef = 300 * (1-0.3) | 210
-        self.palyer_coef = skill_sum * (1 - self.fatigue)
+        #self.palyer_coef = 300 * (1 - 0.3) | 210
+
+        self.player_coef = skill_sum * (1 - self.fatigue)
         
     def __str__(self):
         return f"Player: {self.name}, Age: {self.age}, Position: {self.position}, Fatigue: {self.fatigue}, Skill: {self.skill}, Price: {self.price}, Coef: {self.palyer_coef}"
