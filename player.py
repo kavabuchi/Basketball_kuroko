@@ -7,7 +7,7 @@ class Player:
         "Power_Forward": {"speed": 0.5, "dribble": 0.5, "pass": 0.5, "shot": 0.6},
         "Center": {"speed": 0.4, "dribble": 0.5, "pass": 0.4, "shot": 0.5}
     }
-
+    
     def __init__(self, name, age, position, fatigue, skill, price):
         self.name = name
         self.age = age
