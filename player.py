@@ -37,7 +37,7 @@ class Player:
         self.player_coef = skill_sum * (1 - self.fatigue)
         
     def __str__(self):
-        return f"Player: {self.name}, Age: {self.age}, Position: {self.position}, Fatigue: {self.fatigue}, Skill: {self.skill}, Price: {self.price}, Coef: {self.palyer_coef}"
+        return f"Player: {self.name}, Age: {self.age}, Position: {self.position}, Fatigue: {self.fatigue}, Skill: {self.skill}, Price: {self.price}, Coef: {self.player_coef}"
 
 
 if __name__ == "__main__":

@@ -29,11 +29,23 @@ class Team:
         else:
             print("Your fucking ass have no money for that player")
             return False
-            
+    
+
+    def sell_player(self, player):
+        if player in self.players:
+            self.budget += player.price // 2
+            self.players.remove(player)
+            return True
+        else: 
+            print("You have not this player in your team, stupid bastard")
+            return False
+        
 
     def __str__(self):
-        return f"Team: {self.team_name}, Team Rate: {self.team_rate}, Team skill: {self.team_skill}"
-    
+        players_str = ", ".join(str(player) for player in self.players)
+        return f"Team: {self.team_name}, Team Rate: {self.team_rate}, Team Budget: {self.budget}, Players: [{players_str}]"
+
+
 if __name__ == "__main__":
     team_1 = Team("Lakers", 100, 80)
     team_2 = Team("Bulls", 90, 70)
