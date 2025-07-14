@@ -47,8 +47,8 @@ class Team:
 
 
 if __name__ == "__main__":
-    team_1 = Team("Lakers", 100, 80)
-    team_2 = Team("Bulls", 90, 70)
+    team_1 = Team("Lakers", 100)
+    team_2 = Team("Bulls", 90)
 
     print(team_1)
     print(team_2)
