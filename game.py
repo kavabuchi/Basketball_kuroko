@@ -39,7 +39,7 @@ while True:
             
             if buy_player == player.name:
                 if team_1.budget >= player.price:
-                    team_1.budget -= player.price
+                    team_1.budget -= player.price 
                     team_1.add_player(player)
                     players.remove(player)
                     print(f"You bought a new {player}. The new budget is {team_1.budget}")
@@ -66,7 +66,7 @@ while True:
                 print(f"You sold a {player_in_team}. The new budget is {team_1.budget}")
                 found = True
                 break
-            
+
         if not found:
             print("Player not found")
 
