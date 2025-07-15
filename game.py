@@ -3,7 +3,7 @@ from team import Team
 from match import Match
 import random
 
-team_1 = Team("Lakers", 100000)
+team_1 = Team("Lakers", 1000000)
 
 players = [
     Player("John Smith", 25, "Point_Guard", 0.1, 0.85, 50000),
@@ -26,7 +26,7 @@ while True:
 
     command = input("Enter command: ")
     if command == "Exit":
-        print("game over")
+        print("GAME OVER")
         break
     print("The game continues")
     
@@ -36,27 +36,39 @@ while True:
     
         buy_player = input("Enter player name to buy: ") 
         for player in players:
+            
             if buy_player == player.name:
-                team_1.add_player(player)
-                players.remove(player)
-                team_1.budget -= player.price
-                print(f"You bought a new {player}.")
-                break
-            else:
-                print("Player not found")
+                if team_1.budget >= player.price:
+                    team_1.budget -= player.price
+                    team_1.add_player(player)
+                    players.remove(player)
+                    print(f"You bought a new {player}. The new budget is {team_1.budget}")
+                    break
+
+                elif team_1.budget < player.price:
+                    print("You don't have enough money to buy this player.")
+
+        else:
+            print("Player not found")
 
     if command == "2":
-        for player in team_1:
-            print(player, end= "\n")
+        for player_in_team in team_1.players:
+            print(player_in_team, end= "\n")
     
         sell_player = input("Enter player name to sell: ")
-        for players in team_1:
-            if sell_player == player.name:
-                team_1.remove(player)
-                players.append(player)
-                print(f"You sold a {player}.")
-            else:
-                print("Player not found")
+        
+        found = False
+        for player_in_team in team_1.players:
+            if sell_player == player_in_team.name:
+                team_1.budget += player_in_team.price // 2
+                team_1.players.remove(player_in_team)
+                players.append(player_in_team)
+                print(f"You sold a {player_in_team}. The new budget is {team_1.budget}")
+                found = True
+                break
+            
+        if not found:
+            print("Player not found")
 
 # написати рядки документації для всіх функцій (назва параметра, тип параметра, що вона собою виконує функція, що повертає функція)
 # виправити додавання покупки гравця (щоб писало якого конткретного гравця було куплено)
