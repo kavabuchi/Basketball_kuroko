@@ -15,20 +15,20 @@ players = [
     Player("Robert Green", 29, "Shooting_Guard", 0.18, 0.79, 48000) 
 ]
 
-while True:
+print("Hi, welcome to the NBA simulation!")
+print("You can choose to simulate a match between two teams or to create a new team.")
+print("Command: ")
+print("Enter 1: buy new player")
+print("Enter 2: sell player")
+print("Enter Exit: Exit")
 
-    print("Hi, welcome to the NBA simulation!")
-    print("You can choose to simulate a match between two teams or to create a new team.")
-    print("Command: ")
-    print("Enter 1: buy new player")
-    print("Enter 2: sell player")
-    print("Enter Exit: Exit")
+while True:
 
     command = input("Enter command: ")
     if command == "Exit":
         print("game over")
         break
-    print("Гра продовжується")
+    print("The game continues")
     
     if command == "1":
         for player in players:
@@ -39,21 +39,22 @@ while True:
             if buy_player == player.name:
                 team_1.add_player(player)
                 players.remove(player)
-                print(f"You bought a new {player}")
+                team_1.budget -= player.price
+                print(f"You bought a new {player}.")
                 break
             else:
                 print("Player not found")
 
     if command == "2":
-        for player in players:
+        for player in team_1:
             print(player, end= "\n")
-
-        sell_player = input("Enter player name to sell:")
-        for player in players:
+    
+        sell_player = input("Enter player name to sell: ")
+        for players in team_1:
             if sell_player == player.name:
-                team_1.remove_player(player)
+                team_1.remove(player)
                 players.append(player)
-                print("You sold a player")
+                print(f"You sold a {player}.")
             else:
                 print("Player not found")
 
