@@ -24,6 +24,17 @@ print("Enter Exit: Exit")
 
 while True:
 
+    """
+    Купує гравця для команди, якщо достатньо бюджету.
+
+    Parameters:
+        team (Team): Команда, яка купує гравця.
+        players (Player): Список доступних гравців.
+
+    Returns:
+        bool: True, якщо покупка успішна, False — якщо гравець не знайдений або недостатньо коштів.
+    """
+ 
     command = input("Enter command: ")
     if command == "Exit":
         print("GAME OVER")
@@ -50,6 +61,19 @@ while True:
 
         else:
             print("Player not found")
+
+
+
+    """
+    Продає гравця з команди за пів ціни та додає його до загального списку.
+
+    Parameters:
+        team (Team): Команда, що продає гравця.
+        players (Player): Список доступних гравців.
+
+    Returns:
+        bool: True, якщо гравець був проданий, False — якщо не знайдено.
+    """
 
     if command == "2":
         for player_in_team in team_1.players:

@@ -2,6 +2,17 @@ from player import Player
 
 class Team:
 
+    """
+        Створює команду з певним бюджетом.
+
+        Parameters:
+            team_name (str): Назва команди.
+            budget (int): Початковий бюджет команди.
+
+        Returns:
+            None
+    """
+    
     team_stats = {
         "Lakers": {"rate": 0.8, "skill": 0.7, "win": 0.7},
         "Bulls": {"rate": 0.9, "skill": 0.8,"win": 0.8},
@@ -20,7 +31,16 @@ class Team:
     def team_strength(self):
         return sum(player.player_coef for player in self.players)
         
+    """
+        Додає гравця до складу команди.
 
+        Parameters:
+            player (Player): Об’єкт гравця, якого потрібно додати.
+
+        Returns:
+            None
+    """
+    
     def add_player(self, player):
         if self.budget >= player.price:
             self.budget -= player.price

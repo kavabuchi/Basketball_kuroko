@@ -1,5 +1,20 @@
 class Player:
 
+    """
+        Створює нового гравця.
+
+        Parameters:
+            name (str): Ім’я гравця.
+            age (int): Вік гравця.
+            position (str): Позиція на полі (наприклад: "Point_Guard").
+            fatigue (float): Рівень втоми (0.0 – 1.0).
+            skill (float): Рівень навичок (0.0 – 1.0).
+            price (int): Вартість гравця.
+
+        Returns:
+            None
+    """
+    
     position_stats = {
         "Point_Guard": {"speed": 0.8, "dribble": 0.7, "pass": 0.6, "shot": 0.9},
         "Shooting_Guard": {"speed": 0.7, "dribble": 0.7 , "pass": 0.5, "shot": 0.8},
