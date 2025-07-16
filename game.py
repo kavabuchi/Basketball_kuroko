@@ -3,11 +3,9 @@ from team import Team
 from match import Match
 import random
 
-team_1 = Team("Lakers", 1000000)
-team_2 = Team("Celtics", 1000000)
+my_team = Team("Lakers", 100000),
 
 teams = [
-    Team("Lakers", 100000),
     Team("Warriors", 95000),
     Team("Celtics", 90000),
     Team("Bulls", 92000),
@@ -32,9 +30,7 @@ print("Enter 2: sell player")
 print("Enter 3: start the match")
 print("Enter Exit: Exit")
 
-while True:
-
-    """
+"""
     Купує гравця для команди, якщо достатньо бюджету.
 
     Parameters:
@@ -43,7 +39,9 @@ while True:
 
     Returns:
         bool: True, якщо покупка успішна, False — якщо гравець не знайдений або недостатньо коштів.
-    """
+"""
+
+while True:
  
     command = input("Enter command: ")
     if command == "Exit":
@@ -59,14 +57,14 @@ while True:
         for player in players:
             
             if buy_player == player.name:
-                if team_1.budget >= player.price:
-                    team_1.budget -= player.price 
-                    team_1.add_player(player)
+                if my_team.budget >= player.price:
+                    my_team.budget -= player.price 
+                    my_team.add_player(player)
                     players.remove(player)
-                    print(f"You bought a new {player}. The new budget is {team_1.budget}")
+                    print(f"You bought a new {player}. The new budget is {my_team.budget}")
                     break
 
-                elif team_1.budget < player.price:
+                elif my_team.budget < player.price:
                     print("You don't have enough money to buy this player.")
 
         else:
@@ -85,43 +83,55 @@ while True:
     """
 
     if command == "2":
-        for player_in_team in team_1.players:
+        for player_in_team in my_team.players:
             print(player_in_team, end= "\n")
     
         sell_player = input("Enter player name to sell: ")
         
         found = False
-        for player_in_team in team_1.players:
+        for player_in_team in my_team.players:
 
             if sell_player == player_in_team.name:
 
-                team_1.budget += player_in_team.price // 2
-                team_1.players.remove(player_in_team)
+                my_team.budget += player_in_team.price // 2
+                my_team.players.remove(player_in_team)
                 players.append(player_in_team)
-                print(f"You sold a {player_in_team}. The new budget is {team_1.budget}")
+                print(f"You sold a {player_in_team}. The new budget is {my_team.budget}")
                 found = True
                 break
 
         if not found:
             print("Player not found")
+
     
     if command == "3":
         for team in teams:
-            print(team.name, end= "\n")
+            print(team.team_name, end= "\n")
             
         game_in_team = input("Enter names of teams to play: ")
-        found = False
+        team_names = game_in_team.split("-")
+        if len(team_names) != 2:
+            print("Please enter two team names separated by '-' (e.g. Lakers - Celtics)")
+            continue
+
+        team1_name = team_names[0].strip()
+        team2_name = team_names[1].strip()
+        
+        team1 = None
+        team2 = None
 
         for team in teams:
-            if game_in_team == team.name:
-                match = Match(team_1, team_2)
-                match.play()
-                print(f"Team {team_1.name} vs Team {team_2.name}")
-                found = True
-                break
-        
-        if not found:
-            print("Team not found")
+            if team.team_name == team1_name:
+                team1 = team
+            elif team.team_name == team2_name:
+                team2 = team
+
+        if team1 and team2:
+            match = Match(team1, team2)
+            match.play()
+            print(f"Team {team1.team_name} vs Team {team2.team_name}")
+        else:
+            print("One or both teams not found. Please try again.")
         
 
         

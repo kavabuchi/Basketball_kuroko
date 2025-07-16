@@ -5,20 +5,16 @@ import random
 
 class Match:
     
-    def __init__(self, date, time, stadium, match):
-        self.teams = []
+    def __init__(self, date, time, stadium):
+        self.teams = []          # список із 2 команд
         self.date = date
         self.time = time
         self.stadium = stadium
-        self.match = match
     
-    def append_team(self, team):
-        self.teams.append(team)
-        # teams = [Team("Lakers", 1000000), Team("Warriors", 950000), Team("Celtics", 900000)]
-    
-    def random_match(teams, team_1, team_2):
-        import random
-        team_1, team_2 = random.sample(teams, 2)
+    def random_match(self, teams):
+        team_1, team_2 = random.sample(teams, 2)  # випадковий вибір 2 команд
+        self.teams = [team_1, team_2]             # зберігаємо їх у об’єкт Match
         print(f"Match: {team_1.team_name} vs {team_2.team_name}")
+
 
             
