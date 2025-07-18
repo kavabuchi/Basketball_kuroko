@@ -30,8 +30,11 @@ class Team:
 
     def team_strength(self):
         return sum(player.player_coef for player in self.players)
-        
-    """
+    
+    
+    def add_player(self, player):
+
+        """
         Додає гравця до складу команди.
 
         Parameters:
@@ -39,9 +42,8 @@ class Team:
 
         Returns:
             None
-    """
-    
-    def add_player(self, player):
+        """
+
         if self.budget >= player.price:
             self.budget -= player.price
             self.players.append(player)
@@ -52,6 +54,17 @@ class Team:
     
 
     def sell_player(self, player):
+
+        """
+        Додає гравця до складу команди.
+
+        Parameters:
+            player (Player): Об’єкт гравця, якого потрібно продати.
+
+        Returns:
+            None
+        """
+        
         if player in self.players:
             self.budget += player.price // 2
             self.players.remove(player)

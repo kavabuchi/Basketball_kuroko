@@ -25,5 +25,5 @@ class Match:
         elif team2_score > team1_score:
             print(f"{self.teams[1].team_name} wins with {team2_score} - {team1_score}")
 
-    
+
             
