@@ -110,9 +110,6 @@ while True:
 
         team1_name = team_names[0].strip()
         team2_name = team_names[1].strip()
-        
-        team1 = None
-        team2 = None
 
         for team in teams:
             if team.team_name == team1_name:
@@ -122,8 +119,7 @@ while True:
 
         if team1 and team2:
             match = Match(team1, team2)
-            match.play()
-            print(f"Team {team1.team_name} vs Team {team2.team_name}")
+            match.play_match()
         else:
             print("One or both teams not found. Please try again.")
         
