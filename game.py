@@ -3,7 +3,7 @@ from team import Team
 from match import Match
 import random
 
-my_team = Team("Lakers", 100000),
+my_team = Team("Lakers", 1000000)
 
 teams = [
     Team("Warriors", 95000),
@@ -58,14 +58,10 @@ while True:
             
             if buy_player == player.name:
                 if my_team.budget >= player.price:
-                    my_team.budget -= player.price 
                     my_team.add_player(player)
                     players.remove(player)
                     print(f"You bought a new {player}. The new budget is {my_team.budget}")
                     break
-
-                elif my_team.budget < player.price:
-                    print("You don't have enough money to buy this player.")
 
         else:
             print("Player not found")
@@ -92,9 +88,7 @@ while True:
         for player_in_team in my_team.players:
 
             if sell_player == player_in_team.name:
-
-                my_team.budget += player_in_team.price // 2
-                my_team.players.remove(player_in_team)
+                my_team.sell_player(player_in_team)
                 players.append(player_in_team)
                 print(f"You sold a {player_in_team}. The new budget is {my_team.budget}")
                 found = True
