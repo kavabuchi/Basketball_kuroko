@@ -3,13 +3,19 @@ from team import Team
 from match import Match
 import random
 
-my_team = Team("Lakers", 1000000)
-
-teams = [
+teams = [ 
+    Team("Lakers", 1000000),
     Team("Warriors", 95000),
     Team("Celtics", 90000),
-    Team("Bulls", 92000),
+    Team("Bulls", 92000)
 ]
+
+my_team = None
+
+for team in teams:
+    if team.team_name == "Lakers":
+        my_team = team
+        break
 
 
 players = [
@@ -107,6 +113,9 @@ while True:
         if len(team_names) != 2:
             print("Please enter two team names separated by '-' (e.g. Lakers - Celtics)")
             continue
+        elif team_names == team_names:
+            print("You can't play against yourself")
+            continue
 
         team1_name = team_names[0].strip()
         team2_name = team_names[1].strip()
@@ -133,7 +142,7 @@ while True:
 
 # 2)
 # зробити документаці. до функцій і до класів
-# змерджити гілку в мейн і створити нову для нових завданнь
+# змерджити гілку в мейн і створити нову для нових завданнь --
 # вибрати в якості команди  свою команду
 # пофіксити щоб команда не грала із собою
 # бонус. рахунок команди не рандомився, а рахувався від сили своєї команди а у противника рандомилась, додавався бюджет до команди якщо вона виграла, віднімався якщо програла
