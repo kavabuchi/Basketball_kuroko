@@ -18,12 +18,12 @@ class Match:
         print(f"Match: {team_1.team_name} vs {team_2.team_name}")
     
     def play_match(self):
-        team1_score = random.randint(0, 100)
+        my_team_score = self.teams[0].team_strength()
         team2_score = random.randint(0, 100)
-        if team1_score > team2_score:
-            print(f"{self.teams[0].team_name} wins with {team1_score} - {team2_score}")
-        elif team2_score > team1_score:
-            print(f"{self.teams[1].team_name} wins with {team2_score} - {team1_score}")
+        if my_team_score  > team2_score:
+            print(f"{self.teams[0].team_name} wins with {my_team_score} - {team2_score}")
+        elif team2_score > my_team_score:
+            print(f"{self.teams[1].team_name} wins with {team2_score} - {my_team_score}")
 
 
             

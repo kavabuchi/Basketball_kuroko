@@ -34,6 +34,7 @@ print("Command: ")
 print("Enter 1: buy new player")
 print("Enter 2: sell player")
 print("Enter 3: start the match")
+print("Enter 4: buy all team")
 print("Enter Exit: Exit")
 
 """
@@ -68,9 +69,24 @@ while True:
                     players.remove(player)
                     print(f"You bought a new {player}. The new budget is {my_team.budget}")
                     break
-
         else:
             print("Player not found")
+    
+    if command == "4":
+        for player in players:
+            print(player, end= "\n")
+        
+        buy_players = input("Do you want to buy all players?: yes/no ")
+        if buy_players == "yes":
+            for player in players:
+                if my_team.budget >= player.price:
+                    my_team.add_player(player)
+                    print(f"You bought a {player.name}. The new budget is {my_team.budget}")
+                    
+        elif buy_players == "no":
+            print("You didn't buy any players")
+        else:
+            print("Players not found")
 
 
     """
@@ -83,6 +99,7 @@ while True:
     Returns:
         bool: True, якщо гравець був проданий, False — якщо не знайдено.
     """
+
 
     if command == "2":
         for player_in_team in my_team.players:
@@ -112,25 +129,24 @@ while True:
         team_names = game_in_team.split("-")
         if len(team_names) != 2:
             print("Please enter two team names separated by '-' (e.g. Lakers - Celtics)")
-            continue
-        elif team_names == team_names:
+        elif team_names[0].strip() == team_names[1].strip():
             print("You can't play against yourself")
-            continue
-
-        team1_name = team_names[0].strip()
-        team2_name = team_names[1].strip()
-
-        for team in teams:
-            if team.team_name == team1_name:
-                team1 = team
-            elif team.team_name == team2_name:
-                team2 = team
-
-        if team1 and team2:
-            match = Match(team1, team2)
-            match.play_match()
         else:
-            print("One or both teams not found. Please try again.")
+
+            team1_name = team_names[0].strip()
+            team2_name = team_names[1].strip()
+    
+            for team in teams:
+                if team.team_name == team1_name:
+                    team1 = team
+                elif team.team_name == team2_name:
+                    team2 = team
+    
+            if team1 and team2:
+                match = Match(team1, team2)
+                match.play_match()
+            else:
+                print("One or both teams not found. Please try again.")
         
 
         
@@ -147,5 +163,12 @@ while True:
 # пофіксити щоб команда не грала із собою
 # бонус. рахунок команди не рандомився, а рахувався від сили своєї команди а у противника рандомилась, додавався бюджет до команди якщо вона виграла, віднімався якщо програла
 
+
+# 3) 
+# зробити документаці. до функцій і до класів
+# зробити можливість вибрати свою команду за замовчуванням а команда суперника буде випадковим вибором із всіх команд
+# зробити так зоб за перемогу мені закидували бабіноси
+# зробити так щоб у моєї команди округлівалась сила до меншого числа
+# зробити граф команд від слабких до сильних
 
             
