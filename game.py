@@ -3,8 +3,18 @@ from team import Team
 from match import Match
 import random
 
+print("Hi, welcome to the NBA simulation!")
+print("You can choose to simulate a match between two teams or to create a new team.")
+print("Command: ")
+print("Enter 1: buy new player")
+print("Enter 2: sell player")
+print("Enter 3: start the match")
+print("Enter 4: buy all team")
+print("Enter Exit: Exit")
+
+
 teams = [ 
-    Team("Lakers", 1000000),
+    Team("Lakers", 3000000),
     Team("Warriors", 95000),
     Team("Celtics", 90000),
     Team("Bulls", 92000)
@@ -27,15 +37,6 @@ players = [
     Player("Jarred Vanderbilt", 25, "Power_Forward", 0.2, 0.78, 65000),
     Player("Jaxson Hayes", 24, "Center", 0.22, 0.76, 60000)
 ]
-
-print("Hi, welcome to the NBA simulation!")
-print("You can choose to simulate a match between two teams or to create a new team.")
-print("Command: ")
-print("Enter 1: buy new player")
-print("Enter 2: sell player")
-print("Enter 3: start the match")
-print("Enter 4: buy all team")
-print("Enter Exit: Exit")
 
 """
     Купує гравця для команди, якщо достатньо бюджету.
@@ -66,7 +67,6 @@ while True:
             if buy_player == player.name:
                 if my_team.budget >= player.price:
                     my_team.add_player(player)
-                    players.remove(player)
                     print(f"You bought a new {player}. The new budget is {my_team.budget}")
                     break
         else:
@@ -125,7 +125,7 @@ while True:
         for team in teams:
             print(team.team_name, end= "\n")
             
-        game_in_team = input("Enter names of teams to play: ")
+        game_in_team = input("Enter names for teams to play: ")
         team_names = game_in_team.split("-")
         if len(team_names) != 2:
             print("Please enter two team names separated by '-' (e.g. Lakers - Celtics)")
@@ -133,21 +133,25 @@ while True:
             print("You can't play against yourself")
         else:
 
-            team1_name = team_names[0].strip()
+            my_team = team_names[0].strip()
             team2_name = team_names[1].strip()
     
             for team in teams:
-                if team.team_name == team1_name:
-                    team1 = team
+                if team.team_name == "Lakers":
+                    my_team = team
                 elif team.team_name == team2_name:
                     team2 = team
     
-            if team1 and team2:
-                match = Match(team1, team2)
-                match.play_match()
+            
+            match = Match(my_team, team2)
+            my_score, team2_score = match.play_match()
+            
+            if my_score > team2_score:
+                my_team.budget += 10000
+                print(f"You won against {team2_name}, your new budget is {my_team.budget}")
             else:
                 print("One or both teams not found. Please try again.")
-        
+                
 
         
 # 1)

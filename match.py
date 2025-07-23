@@ -20,10 +20,11 @@ class Match:
     def play_match(self):
         my_team_score = self.teams[0].team_strength()
         team2_score = random.randint(0, 100)
-        if my_team_score  > team2_score:
+        if my_team_score > team2_score:
             print(f"{self.teams[0].team_name} wins with {my_team_score} - {team2_score}")
         elif team2_score > my_team_score:
             print(f"{self.teams[1].team_name} wins with {team2_score} - {my_team_score}")
+        
 
 
             
