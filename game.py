@@ -144,9 +144,9 @@ while True:
     
             
             match = Match(my_team, team2)
-            my_score, team2_score = match.play_match()
+            my_team_score, team2_score = match.play_match()
             
-            if my_score > team2_score:
+            if my_team_score > team2_score:
                 my_team.budget += 10000
                 print(f"You won against {team2_name}, your new budget is {my_team.budget}")
             else:

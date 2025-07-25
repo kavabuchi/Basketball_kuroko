@@ -1,16 +1,17 @@
 from player import Player
 
 class Team:
-
     """
-        Створює команду з певним бюджетом.
+    Представляє баскетбольну команду з бюджетом, списком гравців та можливістю купувати/продавати гравців.
 
-        Parameters:
-            team_name (str): Назва команди.
-            budget (int): Початковий бюджет команди.
-
-        Returns:
-            None
+    Атрибути:
+        team_name (str): Назва команди.
+        budget (int): Доступний бюджет команди.
+        players (list): Список гравців команди.
+        team_rate (float): Загальний рейтинг команди (може бути використаний додатково).
+    
+    Статичні дані:
+        team_stats (dict): Заздалегідь задані характеристики деяких команд.
     """
     
     team_stats = {
@@ -22,6 +23,13 @@ class Team:
 
 
     def __init__(self, team_name, budget):
+        """
+        Ініціалізує команду з заданою назвою та початковим бюджетом.
+
+        Parameters:
+            team_name (str): Назва команди.
+            budget (int): Початковий бюджет команди.
+        """
         self.team_name = team_name
         self.players = []
         self.budget = budget
@@ -29,6 +37,12 @@ class Team:
     
 
     def team_strength(self):
+        """
+        Обчислює сумарну ефективність (strength) команди на основі коефіцієнтів гравців.
+
+        Returns:
+            float: Загальна сила команди.
+        """
         return sum(player.player_coef for player in self.players)
     
     
@@ -54,15 +68,14 @@ class Team:
     
 
     def sell_player(self, player):
-
         """
-        Додає гравця до складу команди.
+        Продає гравця з команди, повертаючи половину вартості в бюджет.
 
         Parameters:
-            player (Player): Об’єкт гравця, якого потрібно продати.
+            player (Player): Об'єкт гравця для продажу.
 
         Returns:
-            None
+            bool: True, якщо гравця успішно продано, False – якщо гравця немає в команді.
         """
         
         if player in self.players:
@@ -75,6 +88,12 @@ class Team:
         
 
     def __str__(self):
+        """
+        Повертає строкове представлення команди з інформацією про склад та бюджет.
+
+        Returns:
+            str: Інформація про команду у зручному форматі.
+        """
         players_str = ", ".join(str(player) for player in self.players)
         return f"Team: {self.team_name}, Team Rate: {self.team_rate}, Team Budget: {self.budget}, Players: [{players_str}]"
 
