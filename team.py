@@ -15,10 +15,9 @@ class Team:
     """
     
     team_stats = {
-        "Lakers": {"rate": 0.8, "skill": 0.7, "win": 0.7},
-        "Bulls": {"rate": 0.9, "skill": 0.8,"win": 0.8},
-        "Celtics": {"rate": 0.7, "skill": 0.6, "win": 0.6},
-        "Warriors": {"rate": 0.9, "skill": 0.8, "win": 0.8}
+        "Bulls": 20,
+        "Celtics": 15,
+        "Warriors": 12
     }
 
 
@@ -37,13 +36,15 @@ class Team:
     
 
     def team_strength(self):
+
         """
         Обчислює сумарну ефективність (strength) команди на основі коефіцієнтів гравців.
 
         Returns:
             float: Загальна сила команди.
         """
-        return sum(player.player_coef for player in self.players)
+
+        return int(sum(player.player_coef for player in self.players))
     
     
     def add_player(self, player):

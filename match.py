@@ -51,15 +51,31 @@ class Match:
         Returns:
             None
         """
-        my_team_score = self.teams[0].team_strength()
-        team2_score = random.randint(0, 100)
-        if my_team_score > team2_score:
-            print(f"{self.teams[0].team_name} wins with {my_team_score} - {team2_score}")
-        elif team2_score > my_team_score:
-            print(f"{self.teams[1].team_name} wins with {team2_score} - {my_team_score}")
 
-        return my_team_score, team2_score
-        
+        opponent_team_strength = random.randint(0, 20)
+
+        if opponent_team_strength >= 0 and opponent_team_strength < 10:
+            opponent_team_score = random.randint(0, 13)
+        elif opponent_team_strength >= 10 and opponent_team_strength < 15:
+            opponent_team_score = random.randint(12, 17)
+        elif opponent_team_strength >= 15 and opponent_team_strength <= 20:
+            opponent_team_score = random.randint(15, 20)
+
+        if self.teams[0].team_strength() == 0:
+            my_team_score = 0
+        elif self.teams[0].team_strength() >= 0 and self.teams[0].team_strength() < 12:
+            my_team_score = random.randint(0, 13)
+        elif self.teams[0].team_strength() > 12 and self.teams[0].team_strength() < 16:
+            my_team_score = random.randint(12, 17)
+        elif self.teams[0].team_strength() > 16 and self.teams[0].team_strength() < 21:
+            my_team_score = random.randint(16, 22)
 
 
+        if my_team_score > opponent_team_score:
+            print(f"{self.teams[0].team_name} wins with {my_team_score} - {opponent_team_score}")
+        elif opponent_team_score > my_team_score:
+            print(f"{self.teams[1].team_name} wins with {opponent_team_score} - {my_team_score}")
+  
+
+        return my_team_score, opponent_team_score
             

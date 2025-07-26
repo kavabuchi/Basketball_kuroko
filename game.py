@@ -14,18 +14,12 @@ print("Enter Exit: Exit")
 
 
 teams = [ 
-    Team("Lakers", 3000000),
     Team("Warriors", 95000),
     Team("Celtics", 90000),
     Team("Bulls", 92000)
 ]
 
-my_team = None
-
-for team in teams:
-    if team.team_name == "Lakers":
-        my_team = team
-        break
+my_team = Team("Lakers", 3000000)
 
 
 players = [
@@ -145,33 +139,21 @@ while True:
         for team in teams:
             print(team.team_name, end= "\n")
             
-        game_in_team = input("Enter names for teams to play: ")
-        team_names = game_in_team.split("-")
-        if len(team_names) != 2:
-            print("Please enter two team names separated by '-' (e.g. Lakers - Celtics)")
-        elif team_names[0].strip() == team_names[1].strip():
-            print("You can't play against yourself")
-        else:
+        opponent_team = input("Enter name for team to play: ")
 
-            my_team = team_names[0].strip()
-            team2_name = team_names[1].strip()
-    
-            for team in teams:
-                if team.team_name == "Lakers":
-                    my_team = team
-                elif team.team_name == team2_name:
-                    team2 = team
-    
+        for team in teams:
+            if team.team_name == opponent_team:
+                opponent_team = team
+
+        match = Match(my_team, opponent_team)
+        my_team_score, opponent_team_score = match.play_match()
             
-            match = Match(my_team, team2)
-            my_team_score, team2_score = match.play_match()
-            
-            if my_team_score > team2_score:
-                my_team.budget += 100000
-                print(f"You won against {team2_name}, your new budget is {my_team.budget}")
-            else:
-                my_team.budget -= 100000
-                print(f"You lost against {team2_name}, your new budget is {my_team.budget}")
+        if my_team_score > opponent_team_score:
+            my_team.budget += 100000
+            print(f"You won against {opponent_team}, your new budget is {my_team.budget}")
+        else:
+            my_team.budget -= 50000
+            print(f"You lost against {opponent_team}, your new budget is {my_team.budget}")
                 
 
         
@@ -191,9 +173,11 @@ while True:
 
 # 3) 
 # зробити документаці. до функцій і до класів -- 
-# зробити можливість вибрати свою команду за замовчуванням а команда суперника буде випадковим вибором із всіх команд
+# зробити можливість вибрати свою команду за замовчуванням а команда суперника буде випадковим вибором із всіх команд -- 
 # зробити так зоб за перемогу мені закидували бабіноси -- 
-# зробити так щоб у моєї команди округлівалась сила до меншого числа
+# зробити так щоб у моєї команди округлівалась сила до меншого числа --
 # зробити граф команд від слабких до сильних
 
-            
+# 4) 
+# зробити перевірки коректності вводу команди опонента, щоб писало якщо не правильна команда , наприклад "Такої команди немає" -- підсказка 144
+# треба щоб сила суперників (match.py) 55 рядок не рандомиоась а бралась з teams_stats (team.py)
