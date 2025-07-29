@@ -6,7 +6,7 @@ import random
 print("Hi, welcome to the NBA simulation!")
 print("You can choose to simulate a match between two teams or to create a new team.")
 print("Command: ")
-print("Enter 1: buy new player")
+print("Enter 1: buy new player, but you can buy only 5 players")
 print("Enter 2: sell player")
 print("Enter 3: start the match")
 print("Enter 4: buy all team")
@@ -56,31 +56,46 @@ while True:
             print(player, end= "\n")
     
         buy_player = input("Enter player name to buy: ") 
+        found = False
+
+
         for player in players:
-            
             if buy_player == player.name:
+                found = True
                 if my_team.budget >= player.price:
-                    my_team.add_player(player)
-                    print(f"You bought a new {player}. The new budget is {my_team.budget}")
-                    break
-        else:
-            print("Player not found")
+                    if len(my_team.players) < 5:
+                        my_team.add_player(player)
+                        players.remove(player)
+                        print(f"You bought a new {player}. The new budget is {my_team.budget}")
+                    else:
+                        print("You already have 5 players.")
+            else:
+                print("Player is not found")
+            break
     
     if command == "4":
         for player in players:
             print(player, end= "\n")
         
-        buy_players = input("Do you want to buy all players?: yes/no ")
+        buy_players = input("You can buy only 5 players: ").lower()
+
         if buy_players == "yes":
+            to_remove = []
             for player in players:
                 if my_team.budget >= player.price:
-                    my_team.add_player(player)
-                    print(f"You bought a {player.name}. The new budget is {my_team.budget}")
-                    
+                    if len(my_team.players) < 5:
+                        my_team.add_player(player)
+                        to_remove.append(player)
+                        print(f"You bought a {player.name}. The new budget is {my_team.budget}")
+
+            for player in to_remove:
+                players.remove(player)
+
+
         elif buy_players == "no":
             print("You didn't buy any players")
         else:
-            print("Players not found")
+            print("Invalid input. Please enter 'yes' or 'no'.")
 
 
     """
@@ -149,12 +164,12 @@ while True:
                 
             if my_team_score > opponent_team_score:
                 my_team.budget += 100000
-                print(f"{my_team.team_name} won! {my_team_score} - {opponent_team_score}. Your new budget is {my_team.budget}")
+                print(f"{my_team.team_name} won! {my_team_score} - {opponent_team_score} . Your new budget is {my_team.budget}")
             elif my_team_score == opponent_team_score:
-                print("🤝 It's a draw!")
+                print("🤝 It's a draw! {my_team_score} - {opponent_team_score}.")
             else:
                 my_team.budget -= 50000
-                print(f"{opponent_team.team_name} won! {opponent_team_score} - {my_team_score}. Your new budget is {my_team.budget}")
+                print(f"{opponent_team.team_name} won! {opponent_team_score} - {my_team_score} . Your new budget is {my_team.budget}")
     except:
         print("You write the wrong team name")    
 
