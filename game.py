@@ -149,12 +149,12 @@ while True:
                 
             if my_team_score > opponent_team_score:
                 my_team.budget += 100000
-                print(f"You won against 🏆  {opponent_team}, your new budget is {my_team.budget}")
+                print(f"{my_team.team_name} won! {my_team_score} - {opponent_team_score}. Your new budget is {my_team.budget}")
             elif my_team_score == opponent_team_score:
                 print("🤝 It's a draw!")
             else:
                 my_team.budget -= 50000
-                print(f"You lost against {opponent_team}, your new budget is {my_team.budget}")
+                print(f"{opponent_team.team_name} won! {opponent_team_score} - {my_team_score}. Your new budget is {my_team.budget}")
     except:
         print("You write the wrong team name")    
 
@@ -183,3 +183,7 @@ while True:
 # 4) 
 # зробити перевірки коректності вводу команди опонента, щоб писало якщо не правильна команда , наприклад "Такої команди немає" -- підсказка 144 -- 
 # треба щоб сила суперників (match.py) 55 рядок не рандомиоась а бралась з teams_stats (team.py)
+
+# 5)
+# злити гілку в мейн і створити нову для нових завдань 
+# зробити обмеженя на кількість гравців у команді, наприклад 5 гравців які можуть грати, якщо хочешь інщого продай попереднього

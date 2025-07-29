@@ -18,8 +18,7 @@ class Team:
         "Bulls": 20,
         "Celtics": 15,
         "Warriors": 12
-    }
-
+        }
 
     def __init__(self, team_name, budget):
         """
@@ -34,7 +33,6 @@ class Team:
         self.budget = budget
         self.team_rate = 0
     
-
     def team_strength(self):
 
         """
@@ -87,6 +85,8 @@ class Team:
             print("You have not this player in your team, stupid bastard")
             return False
         
+    def get_team_strength(self):
+        return self.team_stats.get(self.team_name, self.team_strength())
 
     def __str__(self):
         """

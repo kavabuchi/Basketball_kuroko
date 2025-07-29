@@ -51,32 +51,21 @@ class Match:
         Returns:
             None
         """
-        my_team_score = self.teams[0].team_strength()
-        strength_2 = self.teams[1].team_strength()
+        
+        team1_strength = self.teams[0].get_team_strength()
+        team2_strength = self.teams[1].get_team_strength()
 
-        if self.teams[0].team_strength() == 0:
-            my_team_score = 0
-        elif self.teams[0].team_strength() >= 0 and self.teams[0].team_strength() < 12:
-            my_team_score = random.randint(0, 13)
-        elif self.teams[0].team_strength() > 12 and self.teams[0].team_strength() < 16:
-            my_team_score = random.randint(12, 17)
-        elif self.teams[0].team_strength() > 16 and self.teams[0].team_strength() < 21:
-            my_team_score = random.randint(16, 22)
+        score_1 = random.randint(team1_strength * 3, team1_strength * 5)  # випадковий рахунок для команди 1
+        score_2 = random.randint(team2_strength * 3, team2_strength * 5)  # випадковий рахунок для команди 2
 
-        if strength_2 == 0:
-            score_2 = 0
-        elif 0 <= strength_2 < 12:
-            score_2 = random.randint(0, 13)
-        elif 12 <= strength_2 < 16:
-            score_2 = random.randint(12, 17)
-        elif 16 <= strength_2 <= 20:
-            score_2 = random.randint(16, 22)
-        else:
-            score_2 = random.randint(10, 20)
-
-        print(f"Match Result: {self.teams[0].team_name} ({my_team_score}) vs {self.teams[1].team_name} ({score_2})")
-
-
-        return my_team_score, score_2
+        diff = abs(team1_strength - team2_strength)
+        if diff > 0:
+            bonus = random.randint(0, 4 * diff)  # випадковий бонус за різницю сил команд
+            if team1_strength > team2_strength:
+                score_2 += bonus
+            elif team2_strength > team1_strength:
+                score_1 += bonus
+        
+        return score_1, score_2
 
             
