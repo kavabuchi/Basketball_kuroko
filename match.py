@@ -49,7 +49,7 @@ class Match:
         Після чого визначається переможець та виводиться результат матчу.
 
         Returns:
-            None
+            tuple: score_1, score_2 - рахунок 1 і 2 команди відповідно.
         """
         
         team1_strength = self.teams[0].get_team_strength()

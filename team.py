@@ -60,6 +60,7 @@ class Team:
         if self.budget >= player.price:
             self.budget -= player.price
             self.players.append(player)
+            print("You bought a player")
             return True
         else:
             print("Your fucking ass have no money for that player")
@@ -86,6 +87,12 @@ class Team:
             return False
         
     def get_team_strength(self):
+        """
+        Повертає загальну силу команди з урахуванням статистики.
+        
+        Returns:
+            int: Загальна сила команди.
+        """
         return self.team_stats.get(self.team_name, self.team_strength())
 
     def __str__(self):

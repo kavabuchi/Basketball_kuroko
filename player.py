@@ -21,15 +21,8 @@ class Player:
         "Center": {"speed": 0.4, "dribble": 0.5, "pass": 0.4, "shot": 0.5}
     }
     
+    
     def __init__(self, name, age, position, fatigue, skill, price):
-        self.name = name
-        self.age = age
-        self.position = position
-        self.fatigue = fatigue
-        self.skill = skill
-        self.price = price
-        self.player_coef = 0
-        self.count_coef()
 
         """
         Ініціалізує нового гравця з заданими характеристиками.
@@ -43,6 +36,15 @@ class Player:
             price (int): Вартість гравця.
         """
 
+        self.name = name
+        self.age = age
+        self.position = position
+        self.fatigue = fatigue
+        self.skill = skill
+        self.price = price
+        self.player_coef = 0
+        self.count_coef()
+        
     
     def count_coef(self):
         stats = self.position_stats[self.position]
@@ -59,8 +61,8 @@ class Player:
         #stats = {"speed": 0.8, "dribble": 0.7, "pass": 0.6, "shot": 0.9}
         #self.skill = 100
         
-        for key in stats:
-            skill_sum += stats[key] * self.skill
+        for stat_value in stats.values():
+            skill_sum += stat_value * self.skill
 
             #skill_sum += 0.8(speed) * 100 | 80
             #skill_sum += 0.7(dribble) * 100 | 80 + 70 = 150
@@ -77,7 +79,7 @@ class Player:
         Returns:
             str: Інформація про гравця у читабельному форматі.
         """
-        return f"Player: {self.name}, Age: {self.age}, Position: {self.position}, Fatigue: {self.fatigue}, Skill: {self.skill}, Price: {self.price}, Coef: {self.player_coef}"
+        return f"Player: {self.name}, Age: {self.age}, Position: {self.position}, Fatigue: {self.fatigue}, Skill: {self.skill}, Price: {self.price}, Coef: {self.player_coef:.1f}"
  
 
 if __name__ == "__main__":
