@@ -25,7 +25,40 @@ def print_goodbye():
 def print_separator():
     print("\n" + "-" * 50 + "\n")
 
+# === Створення гравців для команд ===
+
+def create_team_players():
+    """Створює гравців для різних команд"""
+    warriors_players = [
+        Player("Stephen Curry", 35, "Point_Guard", 0.1, 0.95, 120000),
+        Player("Klay Thompson", 33, "Shooting_Guard", 0.15, 0.88, 95000),
+        Player("Draymond Green", 33, "Power_Forward", 0.2, 0.85, 85000),
+        Player("Andrew Wiggins", 28, "Small_Forward", 0.12, 0.82, 80000),
+        Player("Kevon Looney", 27, "Center", 0.18, 0.78, 70000)
+    ]
+    
+    celtics_players = [
+        Player("Jayson Tatum", 25, "Small_Forward", 0.08, 0.92, 110000),
+        Player("Jaylen Brown", 27, "Shooting_Guard", 0.12, 0.89, 105000),
+        Player("Marcus Smart", 29, "Point_Guard", 0.15, 0.84, 85000),
+        Player("Al Horford", 37, "Power_Forward", 0.25, 0.80, 75000),
+        Player("Robert Williams", 25, "Center", 0.22, 0.82, 78000)
+    ]
+    
+    bulls_players = [
+        Player("Zach LaVine", 28, "Shooting_Guard", 0.1, 0.87, 95000),
+        Player("DeMar DeRozan", 34, "Small_Forward", 0.18, 0.85, 90000),
+        Player("Lonzo Ball", 25, "Point_Guard", 0.3, 0.79, 75000),
+        Player("Patrick Williams", 22, "Power_Forward", 0.15, 0.76, 65000),
+        Player("Nikola Vucevic", 32, "Center", 0.2, 0.83, 85000)
+    ]
+    
+    return warriors_players, celtics_players, bulls_players
+
 # === Ініціалізація ===
+
+# Створюємо команди з гравцями
+warriors_players, celtics_players, bulls_players = create_team_players()
 
 teams = [ 
     Team("Warriors", 95000),
@@ -33,8 +66,17 @@ teams = [
     Team("Bulls", 92000)
 ]
 
-my_team = Team("Lakers", 3000000)
+# Додаємо гравців до команд
+for player in warriors_players:
+    teams[0].add_player_free(player)
 
+for player in celtics_players:
+    teams[1].add_player_free(player)
+
+for player in bulls_players:
+    teams[2].add_player_free(player)
+
+# Список вільних гравців для покупки
 players = [
     Player("LeBron James", 39, "Small_Forward", 0.1, 0.95, 100000),
     Player("Anthony Davis", 31, "Power_Forward", 0.15, 0.92, 95000),
@@ -44,6 +86,61 @@ players = [
     Player("Jarred Vanderbilt", 25, "Power_Forward", 0.2, 0.78, 65000),
     Player("Jaxson Hayes", 24, "Center", 0.22, 0.76, 60000)
 ]
+
+# === Вибір або створення команди ===
+print("=" * 50)
+print("🏀 NBA SIMULATION: Team Selection 🏀".center(50))
+print("=" * 50)
+print("1️⃣  Створити нову команду")
+print("2️⃣  Викупити існуючу команду")
+print("-" * 50)
+
+while True:
+    team_choice = input("Виберіть опцію (1 або 2): ").strip()
+    if team_choice == "1":
+        # Створення нової команди
+        team_name = input("Введіть назву вашої нової команди: ").strip()
+        while True:
+            try:
+                budget = int(input("Введіть стартовий бюджет (наприклад, 100000): ").strip())
+                break
+            except ValueError:
+                print("Введіть ціле число для бюджету!")
+        my_team = Team(team_name, budget)
+        print(f"✅ Ви створили команду {team_name} з бюджетом {budget} і без гравців.")
+        break
+    elif team_choice == "2":
+        # Викуп існуючої команди
+        print("\n🏀 Доступні команди для викупу:")
+        print("=" * 50)
+        for idx, team in enumerate(teams):
+            print(f"\n{idx+1}. {team.team_name}")
+            print(f"   💰 Бюджет: {team.budget}")
+            print(f"   👥 Гравців: {len(team.players)}")
+            print("   🏃 Склад:")
+            for player in team.players:
+                print(f"      • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+            print("-" * 30)
+        
+        while True:
+            try:
+                select = int(input("\nВведіть номер команди для викупу: ").strip())
+                if 1 <= select <= len(teams):
+                    my_team = teams.pop(select-1)
+                    print(f"\n✅ Ви викупили команду {my_team.team_name}!")
+                    print(f"💰 Бюджет: {my_team.budget}")
+                    print(f"👥 Гравців: {len(my_team.players)}")
+                    print("🏃 Ваш склад:")
+                    for player in my_team.players:
+                        print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+                    break
+                else:
+                    print("❌ Невірний номер команди!")
+            except ValueError:
+                print("❌ Введіть ціле число!")
+        break
+    else:
+        print("❌ Введіть 1 або 2!")
 
 # === Функції гри ===
 

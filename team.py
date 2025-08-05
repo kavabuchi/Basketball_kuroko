@@ -47,18 +47,32 @@ class Team:
         Додає гравця до складу команди.
 
         Parameters:
-            player (Player): Об’єкт гравця, якого потрібно додати.
+            player (Player): Об'єкт гравця, якого потрібно додати.
 
         Returns:
-            None
+            bool: True, якщо гравець успішно доданий, False - якщо недостатньо коштів.
         """
         if self.budget >= player.price:
             self.budget -= player.price
             self.players.append(player)
+            print(f"✅ Успішно куплено гравця: {player.name}")
             return True
         else:
-            print("Your fucking ass have no money for that player")
+            print(f"❌ Недостатньо коштів для покупки гравця {player.name}")
             return False
+    
+    def add_player_free(self, player):
+        """
+        Додає гравця до складу команди безкоштовно (для створення початкового складу).
+
+        Parameters:
+            player (Player): Об'єкт гравця, якого потрібно додати.
+
+        Returns:
+            bool: True, якщо гравець успішно доданий.
+        """
+        self.players.append(player)
+        return True
     
     def sell_player(self, player):
         """
@@ -73,9 +87,10 @@ class Team:
         if player in self.players:
             self.budget += player.price // 2
             self.players.remove(player)
+            print(f"✅ Успішно продано гравця: {player.name}")
             return True
         else: 
-            print("You have not this player in your team, stupid bastard")
+            print(f"❌ Гравець {player.name} не знаходиться в вашій команді")
             return False
         
     def get_team_strength(self):
