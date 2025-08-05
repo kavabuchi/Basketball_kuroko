@@ -87,60 +87,93 @@ players = [
     Player("Jaxson Hayes", 24, "Center", 0.22, 0.76, 60000)
 ]
 
-# === Вибір або створення команди ===
-print("=" * 50)
-print("🏀 NBA SIMULATION: Team Selection 🏀".center(50))
-print("=" * 50)
-print("1️⃣  Створити нову команду")
-print("2️⃣  Викупити існуючу команду")
-print("-" * 50)
+# === Функції вибору команди ===
 
-while True:
-    team_choice = input("Виберіть опцію (1 або 2): ").strip()
-    if team_choice == "1":
-        # Створення нової команди
-        team_name = input("Введіть назву вашої нової команди: ").strip()
-        while True:
-            try:
-                budget = int(input("Введіть стартовий бюджет (наприклад, 100000): ").strip())
-                break
-            except ValueError:
-                print("Введіть ціле число для бюджету!")
-        my_team = Team(team_name, budget)
-        print(f"✅ Ви створили команду {team_name} з бюджетом {budget} і без гравців.")
-        break
-    elif team_choice == "2":
-        # Викуп існуючої команди
-        print("\n🏀 Доступні команди для викупу:")
-        print("=" * 50)
-        for idx, team in enumerate(teams):
-            print(f"\n{idx+1}. {team.team_name}")
-            print(f"   💰 Бюджет: {team.budget}")
-            print(f"   👥 Гравців: {len(team.players)}")
-            print("   🏃 Склад:")
-            for player in team.players:
-                print(f"      • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
-            print("-" * 30)
-        
-        while True:
-            try:
-                select = int(input("\nВведіть номер команди для викупу: ").strip())
-                if 1 <= select <= len(teams):
-                    my_team = teams.pop(select-1)
-                    print(f"\n✅ Ви викупили команду {my_team.team_name}!")
-                    print(f"💰 Бюджет: {my_team.budget}")
-                    print(f"👥 Гравців: {len(my_team.players)}")
-                    print("🏃 Ваш склад:")
-                    for player in my_team.players:
-                        print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
-                    break
-                else:
-                    print("❌ Невірний номер команди!")
-            except ValueError:
-                print("❌ Введіть ціле число!")
-        break
-    else:
-        print("❌ Введіть 1 або 2!")
+def create_new_team():
+    """
+    Створює нову команду з введеними користувачем параметрами.
+    
+    Returns:
+        Team: Створена команда.
+    """
+    team_name = input("Введіть назву вашої нової команди: ").strip()
+    while True:
+        try:
+            budget = int(input("Введіть стартовий бюджет (наприклад, 100000): ").strip())
+            break
+        except ValueError:
+            print("Введіть ціле число для бюджету!")
+    
+    new_team = Team(team_name, budget)
+    print(f"✅ Ви створили команду {team_name} з бюджетом {budget} і без гравців.")
+    return new_team
+
+def select_existing_team(teams):
+    """
+    Дозволяє користувачу вибрати існуючу команду для викупу.
+    
+    Parameters:
+        teams (list): Список доступних команд.
+    
+    Returns:
+        Team: Вибрана команда.
+    """
+    print("\n🏀 Доступні команди для викупу:")
+    print("=" * 50)
+    for idx, team in enumerate(teams):
+        print(f"\n{idx+1}. {team.team_name}")
+        print(f"   💰 Бюджет: {team.budget}")
+        print(f"   👥 Гравців: {len(team.players)}")
+        print("   🏃 Склад:")
+        for player in team.players:
+            print(f"      • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+        print("-" * 30)
+    
+    while True:
+        try:
+            select = int(input("\nВведіть номер команди для викупу: ").strip())
+            if 1 <= select <= len(teams):
+                selected_team = teams.pop(select-1)
+                print(f"\n✅ Ви викупили команду {selected_team.team_name}!")
+                print(f"💰 Бюджет: {selected_team.budget}")
+                print(f"👥 Гравців: {len(selected_team.players)}")
+                print("🏃 Ваш склад:")
+                for player in selected_team.players:
+                    print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+                return selected_team
+            else:
+                print("❌ Невірний номер команди!")
+        except ValueError:
+            print("❌ Введіть ціле число!")
+
+def choose_team(teams):
+    """
+    Головна функція для вибору команди користувачем.
+    
+    Parameters:
+        teams (list): Список доступних команд.
+    
+    Returns:
+        Team: Вибрана або створена команда.
+    """
+    print("=" * 50)
+    print("🏀 NBA SIMULATION: Team Selection 🏀".center(50))
+    print("=" * 50)
+    print("1️⃣  Створити нову команду")
+    print("2️⃣  Викупити існуючу команду")
+    print("-" * 50)
+    
+    while True:
+        team_choice = input("Виберіть опцію (1 або 2): ").strip()
+        if team_choice == "1":
+            return create_new_team()
+        elif team_choice == "2":
+            return select_existing_team(teams)
+        else:
+            print("❌ Введіть 1 або 2!")
+
+# === Вибір або створення команди ===
+my_team = choose_team(teams)
 
 # === Функції гри ===
 
