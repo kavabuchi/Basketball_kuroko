@@ -1,10 +1,9 @@
 class Player:
-
     """
     Представляє гравця баскетбольної команди з характеристиками, що впливають на його ефективність.
 
     Атрибути:
-        name (str): Ім’я гравця.
+        name (str): Ім'я гравця.
         age (int): Вік гравця.
         position (str): Позиція на полі (наприклад: "Point_Guard").
         fatigue (float): Рівень втоми (від 0.0 до 1.0).
@@ -13,15 +12,27 @@ class Player:
         player_coef (float): Обчислений коефіцієнт ефективності гравця.
     """
     
+    # Статистика для різних позицій гравців
     position_stats = {
         "Point_Guard": {"speed": 0.8, "dribble": 0.7, "pass": 0.6, "shot": 0.9},
-        "Shooting_Guard": {"speed": 0.7, "dribble": 0.7 , "pass": 0.5, "shot": 0.8},
+        "Shooting_Guard": {"speed": 0.7, "dribble": 0.7, "pass": 0.5, "shot": 0.8},
         "Small_Forward": {"speed": 0.6, "dribble": 0.6, "pass": 0.6, "shot": 0.7}, 
         "Power_Forward": {"speed": 0.5, "dribble": 0.5, "pass": 0.5, "shot": 0.6},
         "Center": {"speed": 0.4, "dribble": 0.5, "pass": 0.4, "shot": 0.5}
     }
     
     def __init__(self, name, age, position, fatigue, skill, price):
+        """
+        Ініціалізує нового гравця з заданими характеристиками.
+
+        Parameters:
+            name (str): Ім'я гравця.
+            age (int): Вік гравця.
+            position (str): Позиція на полі.
+            fatigue (float): Рівень втоми (0.0 – 1.0).
+            skill (float): Рівень навичок (0.0 – 1.0 або 0 – 100).
+            price (int): Вартість гравця.
+        """
         self.name = name
         self.age = age
         self.position = position
@@ -30,24 +41,8 @@ class Player:
         self.price = price
         self.player_coef = 0
         self.count_coef()
-
-        """
-        Ініціалізує нового гравця з заданими характеристиками.
-
-        Parameters:
-            name (str): Ім’я гравця.
-            age (int): Вік гравця.
-            position (str): Позиція на полі.
-            fatigue (float): Рівень втоми (0.0 – 1.0).
-            skill (float): Рівень навичок (0.0 – 1.0 або 0 – 100).
-            price (int): Вартість гравця.
-        """
-
     
     def count_coef(self):
-        stats = self.position_stats[self.position]
-        skill_sum = 0
-
         """
         Обчислює коефіцієнт ефективності гравця (`player_coef`), 
         базуючись на навичках гравця, його позиції та рівні втоми.
@@ -55,19 +50,15 @@ class Player:
         Формула:
             player_coef = Σ(position_stat[key] × skill) × (1 − fatigue)
         """
-
-        #stats = {"speed": 0.8, "dribble": 0.7, "pass": 0.6, "shot": 0.9}
-        #self.skill = 100
+        # Отримуємо статистику для позиції гравця
+        stats = self.position_stats[self.position]
+        skill_sum = 0
         
-        for key in stats:
-            skill_sum += stats[key] * self.skill
-
-            #skill_sum += 0.8(speed) * 100 | 80
-            #skill_sum += 0.7(dribble) * 100 | 80 + 70 = 150
-
-        #skill_sum = 300
-        #self.palyer_coef = 300 * (1 - 0.3) | 210
-
+        # Обчислюємо суму навичок з урахуванням позиції
+        for stat_value in stats.values():
+            skill_sum += stat_value * self.skill
+        
+        # Застосовуємо вплив втоми
         self.player_coef = skill_sum * (1 - self.fatigue)
         
     def __str__(self):
@@ -77,7 +68,7 @@ class Player:
         Returns:
             str: Інформація про гравця у читабельному форматі.
         """
-        return f"Player: {self.name}, Age: {self.age}, Position: {self.position}, Fatigue: {self.fatigue}, Skill: {self.skill}, Price: {self.price}, Coef: {self.player_coef}"
+        return f"Player: {self.name}, Age: {self.age}, Position: {self.position}, Fatigue: {self.fatigue}, Skill: {self.skill}, Price: {self.price}, Coef: {self.player_coef:.1f}"
  
 
 if __name__ == "__main__":

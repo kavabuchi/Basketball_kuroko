@@ -19,10 +19,7 @@ class Match:
             team1 (Team): Перша команда.
             team2 (Team): Друга команда.
         """
-        self.teams = [team1, team2]      # список із 2 команд
-        # self.date = date
-        # self.time = time
-        # self.stadium = stadium
+        self.teams = [team1, team2]
     
     def random_match(self, teams):
         """
@@ -35,9 +32,9 @@ class Match:
             None
         """
         team_1, team_2 = random.sample(teams, 2)  # випадковий вибір 2 команд
-        self.teams = [team_1, team_2]            # зберігаємо їх у об’єкт Match
+        self.teams = [team_1, team_2]            # зберігаємо їх у об'єкт Match
         
-        print(f"Match: {team_1.team_name} vs {team_2.team_name}")
+        print(f"🏀 Матч: {team_1.team_name} vs {team_2.team_name}")
     
     def play_match(self):
         """
@@ -49,22 +46,24 @@ class Match:
         Після чого визначається переможець та виводиться результат матчу.
 
         Returns:
-            None
+            tuple: (score_1, score_2) - рахунок першої та другої команди.
         """
         
         team1_strength = self.teams[0].get_team_strength()
         team2_strength = self.teams[1].get_team_strength()
 
-        score_1 = random.randint(team1_strength * 3, team1_strength * 5)  # випадковий рахунок для команди 1
-        score_2 = random.randint(team2_strength * 3, team2_strength * 5)  # випадковий рахунок для команди 2
+        # Обчислюємо рахунок на основі сили команд
+        score_1 = random.randint(team1_strength * 3, team1_strength * 5)
+        score_2 = random.randint(team2_strength * 3, team2_strength * 5)
 
+        # Додаємо бонус до слабшої команди для балансування матчу
         diff = abs(team1_strength - team2_strength)
         if diff > 0:
-            bonus = random.randint(0, 4 * diff)  # випадковий бонус за різницю сил команд
+            bonus = random.randint(0,3 * diff)
             if team1_strength > team2_strength:
-                score_2 += bonus
+                score_2 += bonus  # Бонус додається до слабшої команди
             elif team2_strength > team1_strength:
-                score_1 += bonus
+                score_1 += bonus  # Бонус додається до слабшої команди
         
         return score_1, score_2
 

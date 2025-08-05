@@ -14,11 +14,12 @@ class Team:
         team_stats (dict): Заздалегідь задані характеристики деяких команд.
     """
     
+    # Статистика команд
     team_stats = {
         "Bulls": 20,
         "Celtics": 15,
         "Warriors": 12
-        }
+    }
 
     def __init__(self, team_name, budget):
         """
@@ -34,38 +35,33 @@ class Team:
         self.team_rate = 0
     
     def team_strength(self):
-
         """
         Обчислює сумарну ефективність (strength) команди на основі коефіцієнтів гравців.
 
         Returns:
-            float: Загальна сила команди.
+            int: Загальна сила команди.
         """
-
         return int(sum(player.player_coef for player in self.players))
     
-    
     def add_player(self, player):
-
         """
         Додає гравця до складу команди.
 
         Parameters:
-            player (Player): Об’єкт гравця, якого потрібно додати.
+            player (Player): Об'єкт гравця, якого потрібно додати.
 
         Returns:
-            None
+            bool: True, якщо гравець успішно доданий, False - якщо недостатньо коштів.
         """
-
         if self.budget >= player.price:
             self.budget -= player.price
             self.players.append(player)
+            print(f"✅ Успішно куплено гравця: {player.name}")
             return True
         else:
-            print("Your fucking ass have no money for that player")
+            print(f"❌ Недостатньо коштів для покупки гравця {player.name}")
             return False
     
-
     def sell_player(self, player):
         """
         Продає гравця з команди, повертаючи половину вартості в бюджет.
@@ -76,16 +72,22 @@ class Team:
         Returns:
             bool: True, якщо гравця успішно продано, False – якщо гравця немає в команді.
         """
-        
         if player in self.players:
             self.budget += player.price // 2
             self.players.remove(player)
+            print(f"✅ Успішно продано гравця: {player.name}")
             return True
         else: 
-            print("You have not this player in your team, stupid bastard")
+            print(f"❌ Гравець {player.name} не знаходиться в вашій команді")
             return False
         
     def get_team_strength(self):
+        """
+        Повертає силу команди з урахуванням статистики команди або обчисленої сили.
+
+        Returns:
+            int: Сила команди.
+        """
         return self.team_stats.get(self.team_name, self.team_strength())
 
     def __str__(self):
