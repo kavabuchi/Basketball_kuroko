@@ -18,7 +18,7 @@ class Team:
         "Bulls": 20,
         "Celtics": 15,
         "Warriors": 12
-        }
+    }
 
     def __init__(self, team_name, budget):
         """
@@ -34,19 +34,15 @@ class Team:
         self.team_rate = 0
     
     def team_strength(self):
-
         """
         Обчислює сумарну ефективність (strength) команди на основі коефіцієнтів гравців.
 
         Returns:
             float: Загальна сила команди.
         """
-
         return int(sum(player.player_coef for player in self.players))
     
-    
     def add_player(self, player):
-
         """
         Додає гравця до складу команди.
 
@@ -56,17 +52,14 @@ class Team:
         Returns:
             None
         """
-
         if self.budget >= player.price:
             self.budget -= player.price
             self.players.append(player)
-            print("You bought a player")
             return True
         else:
             print("Your fucking ass have no money for that player")
             return False
     
-
     def sell_player(self, player):
         """
         Продає гравця з команди, повертаючи половину вартості в бюджет.
@@ -77,7 +70,6 @@ class Team:
         Returns:
             bool: True, якщо гравця успішно продано, False – якщо гравця немає в команді.
         """
-        
         if player in self.players:
             self.budget += player.price // 2
             self.players.remove(player)
@@ -97,13 +89,19 @@ class Team:
 
     def __str__(self):
         """
-        Повертає строкове представлення команди з інформацією про склад та бюджет.
+        Повертає строкове представлення команди з інформацією про склад та бюджет у красивому форматі.
 
         Returns:
             str: Інформація про команду у зручному форматі.
         """
-        players_str = ", ".join(str(player) for player in self.players)
-        return f"Team: {self.team_name}, Team Rate: {self.team_rate}, Team Budget: {self.budget}, Players: [{players_str}]"
+        divider = "=" * 50
+        header = f"🏀 Team: {self.team_name} 🏀"
+        budget = f"💰 Budget: ${self.budget:,}"
+        strength = f"💪 Team Strength: {self.get_team_strength()}"
+        players_title = "🏀 Players:"
+        players_list = "\n".join([f"  - {player}" for player in self.players]) if self.players else "  No players in the team."
+
+        return f"\n{divider}\n{header}\n{divider}\n{budget}\n{strength}\n\n{players_title}\n{players_list}\n{divider}\n"
 
 
 if __name__ == "__main__":
