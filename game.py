@@ -70,7 +70,8 @@ def create_team_players():
 # === Ініціалізація ===
 
 # Створюємо команди з гравцями
-warriors_players, celtics_players, bulls_players = create_team_players()
+
+warriors_players, celtics_players, bulls_players, lakers_players = create_team_players()
 
 teams = [ 
     Team("Warriors", 95000),
@@ -78,6 +79,19 @@ teams = [
     Team("Bulls", 92000),
     Team("Lakers", 98000)
 ]
+
+for player in warriors_players:
+    teams[0].add_player_free(player)
+
+for player in celtics_players:
+    teams[1].add_player_free(player)
+
+for player in bulls_players:
+    teams[2].add_player_free(player)
+
+for player in lakers_players:
+    teams[3].add_player_free(player)
+
 
 my_team = None  # Ініціалізація my_team як None
 
