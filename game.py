@@ -32,8 +32,46 @@ def print_goodbye():
 def print_separator():
     print("\n" + "-" * 50 + "\n")
 
+# === Створення гравців для команд ===
+
+def create_team_players():
+    warriors_players = [
+        Player("Stephen Curry", 35, "Point_Guard", 0.1, 0.95, 120000),
+        Player("Klay Thompson", 33, "Shooting_Guard", 0.15, 0.88, 95000),
+        Player("Draymond Green", 33, "Power_Forward", 0.2, 0.85, 85000),
+        Player("Andrew Wiggins", 28, "Small_Forward", 0.12, 0.82, 80000),
+        Player("Kevon Looney", 27, "Center", 0.18, 0.78, 70000)
+    ]
+    celtics_players = [
+        Player("Jayson Tatum", 25, "Small_Forward", 0.08, 0.92, 110000),
+        Player("Jaylen Brown", 27, "Shooting_Guard", 0.12, 0.89, 105000),
+        Player("Marcus Smart", 29, "Point_Guard", 0.15, 0.84, 85000),
+        Player("Al Horford", 37, "Power_Forward", 0.25, 0.80, 75000),
+        Player("Robert Williams", 25, "Center", 0.22, 0.82, 78000)
+    ]
+    bulls_players = [
+        Player("Zach LaVine", 28, "Shooting_Guard", 0.1, 0.87, 95000),
+        Player("DeMar DeRozan", 34, "Small_Forward", 0.18, 0.85, 90000),
+        Player("Lonzo Ball", 25, "Point_Guard", 0.3, 0.79, 75000),
+        Player("Patrick Williams", 22, "Power_Forward", 0.15, 0.76, 65000),
+        Player("Nikola Vucevic", 32, "Center", 0.2, 0.83, 85000)
+    ]
+    lakers_players = [
+        Player("LeBron James", 39, "Small_Forward", 0.1, 0.95, 100000),
+        Player("Anthony Davis", 31, "Power_Forward", 0.15, 0.92, 95000),
+        Player("D'Angelo Russell", 28, "Point_Guard", 0.2, 0.85, 75000),
+        Player("Austin Reaves", 26, "Shooting_Guard", 0.12, 0.83, 70000),
+        Player("Rui Hachimura", 26, "Small_Forward", 0.18, 0.8, 68000),
+        Player("Jarred Vanderbilt", 25, "Power_Forward", 0.2, 0.78, 65000),
+        Player("Jaxson Hayes", 24, "Center", 0.22, 0.76, 60000)
+    ]
+    return warriors_players, celtics_players, bulls_players, lakers_players
+
 # === Ініціалізація ===
-    
+
+# Створюємо команди з гравцями
+warriors_players, celtics_players, bulls_players = create_team_players()
+
 teams = [ 
     Team("Warriors", 95000),
     Team("Celtics", 90000),
