@@ -189,6 +189,29 @@ def buy_players(my_team, players):
     else:
         print("⚠️  Invalid input. Please enter 'yes' or 'no'.")
 
+def select_existing_team(teams):
+    print_separator()
+    print("Existing Teams:")
+    for idx, team in enumerate(teams):
+        print(f"{idx+1}. {team.team_name} - Budget: ${team.budget}")
+
+    while True:
+        try:
+            team_idx = int(input(f"\nChoose a team to play with (1-{len(teams)}): "))
+            if 1 <= team_idx <= len(teams):
+                selected_team = teams.pop(team_idx - 1)
+                print(f"\n✅ Ви викупили команду {selected_team.team_name}!")
+                print(f"💰 Бюджет: {selected_team.budget}")
+                print(f"👥 Гравців: {len(selected_team.players)}")
+                print("🏃 Ваш склад:")
+                for player in selected_team.players:
+                    print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+                return selected_team
+            else:
+                print("❌ Невірний номер команди!")
+        except ValueError:
+            print("❌ Введіть ціле число!")
+
 # === Головний цикл ===
 
 start_main_menu()
@@ -201,11 +224,8 @@ while True:
         if create_team():
             break  # Перейти до основного меню після створення команди
     elif choice == "2":
-        if my_team is None:
-            print("⚠️  Create a team first!")
-        else:
-            buy_players(my_team, players)
-            break  # Перейти до основного меню після автопокупки
+        my_team = select_existing_team(teams)
+        break
     else:
         print("⚠️  Invalid choice. Please enter 1, 2, or Exit.")
 
