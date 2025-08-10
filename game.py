@@ -33,7 +33,7 @@ def print_separator():
     print("\n" + "-" * 50 + "\n")
 
 # === Ініціалізація ===
-
+    
 teams = [ 
     Team("Warriors", 95000),
     Team("Celtics", 90000),
