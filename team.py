@@ -59,6 +59,19 @@ class Team:
         else:
             print("Your fucking ass have no money for that player")
             return False
+    def add_player_free(self, player):
+        """
+        Додає гравця до складу команди без списання бюджету.
+
+        Parameters:
+            player (Player): Об’єкт гравця, якого потрібно додати.
+
+        Returns:
+            bool: True, якщо гравця додано.
+        """
+        self.players.append(player)
+        return True
+    
     
     def sell_player(self, player):
         """
