@@ -109,7 +109,6 @@ def create_team():
     if not team_name:
         print("⚠️ Team name cannot be empty!")
         return False
-
     try:
         team_budget = int(input("Enter your team budget (100000 to 1000000): "))
         if not (100000 <= team_budget <= 1000000):
@@ -190,7 +189,7 @@ def opponent_team(my_team, teams):
     print("Available Opponent Teams:")
     for team in teams:
         if team != my_team:
-            print(f"- {team.team_name} (Players: {len(team.players)}, Strength: {team.get_team_strength()})")
+            print(f"- {team.team_name} (Players: {len(team.players)}, Strength: {team.team_strength()})")
     print("═" * 60)
 
     opponent_name = input("Enter name of the opponent team: ").strip()
@@ -217,7 +216,7 @@ def opponent_team(my_team, teams):
         return
 
     # Сила команди до матчу
-    pre_match_strength = my_team.get_team_strength()
+    pre_match_strength = my_team.team_strength()
 
     print("\n👥 Your Team Status (Before Match):")
     print(f"Team: {my_team.team_name}, Strength: {pre_match_strength}")
@@ -228,7 +227,7 @@ def opponent_team(my_team, teams):
         print("Tired Players (Will Not Play):")
         for player in tired_players:
             print(f"  ⚠️ {player.name} is too tired to play! (Fatigue: {player.fatigue:.2f})")
-    print(f"\nOpponent: {opponent.team_name}, Strength: {opponent.get_team_strength()}")
+    print(f"\nOpponent: {opponent.team_name}, Strength: {opponent.team_strength()}")
 
     # Тимчасово змінюємо гравців команди на активних для матчу
     original_players = my_team.players[:]
@@ -263,7 +262,7 @@ def opponent_team(my_team, teams):
         player.increase_fatigue()
 
     # Сила команди після матчу
-    post_match_strength = my_team.get_team_strength()
+    post_match_strength = my_team.team_strength()
 
     print("\n👥 Team Status After Match:")
     print(f"Team: {my_team.team_name}, Strength: {post_match_strength}")
@@ -296,7 +295,7 @@ def buy_players(my_team, players):
     print(f"\n👥 Your Team: {my_team.team_name}")
     print(f"💰 Budget: ${my_team.budget:,}")
     print(f"🏀 Players: {len(my_team.players)}/5")
-    print(f"💪 Team Strength: {my_team.get_team_strength()}")
+    print(f"💪 Team Strength: {my_team.team_strength()}")
     print("─" * 60)
     buy_players = input("Do you want to auto-buy up to 5 players? (yes/no): ").lower()
     
@@ -332,7 +331,7 @@ def buy_players(my_team, players):
             print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╩")
             print(f"✅ Total players bought: {len(bought_players)}")
             print(f"💰 New budget: ${my_team.budget:,}")
-            print(f"💪 New team strength: {my_team.get_team_strength()}")
+            print(f"💪 New team strength: {my_team.team_strength()}")
             print("═" * 60)
         else:
             print("⚠️ No players bought. Insufficient budget or no suitable players.")
@@ -360,7 +359,7 @@ def select_existing_team(teams):
                 print(f"\n✅ You selected team {selected_team.team_name}!")
                 print(f"💰 Budget: ${selected_team.budget:,}")
                 print(f"👥 Players: {len(selected_team.players)}")
-                print(f"💪 Team Strength: {selected_team.get_team_strength()}")
+                print(f"💪 Team Strength: {selected_team.team_strength()}")
                 print("🏃 Team roster:")
                 for player in selected_team.players:
                     print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
@@ -377,7 +376,7 @@ def show_stats(my_team):
     print("═" * 60)
     print(f"💰 Budget: ${my_team.budget:,}")
     print(f"👥 Players: {len(my_team.players)}")
-    print(f"💪 Team Strength: {my_team.get_team_strength()}")
+    print(f"💪 Team Strength: {my_team.team_strength()}")
     print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} ║".format(
         "Name", "Position", "Coef", "Fatigue", "Price"
     ))
@@ -388,6 +387,50 @@ def show_stats(my_team):
             player.name, player.position, player.player_coef, player.fatigue, player.price
         ))
     print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
+    print("═" * 60)
+
+def rest_team(my_team):
+    """
+    Дозволяє команді відпочити, зменшуючи втому всіх гравців і виводячи оновлений статус команди.
+
+    Parameters:
+        my_team (Team): Команда, гравці якої відпочинуть.
+
+    Returns:
+        None
+    """
+
+    # Сила команди до відпочинку
+    pre_rest_strength = my_team.team_strength()
+
+    # Зменшення втоми для всіх гравців
+    for player in my_team.players:
+        player.decrease_fatigue()
+
+    # Сила команди після відпочинку
+    post_rest_strength = my_team.team_strength()
+
+    # Виведення статусу
+    print("\n" + "═" * 60)
+    print("🏀 TEAM REST 🏀".center(60))
+    print("═" * 60)
+    print(f"👥 Team: {my_team.team_name}")
+    print(f"💪 Team Strength Before Rest: {pre_rest_strength}")
+    print(f"💪 Team Strength After Rest: {post_rest_strength}")
+    if pre_rest_strength != post_rest_strength:
+        print(f"✅ Team strength increased from {pre_rest_strength} to {post_rest_strength} due to rest!")
+    print("\nPlayers Status After Rest:")
+    print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} ║".format(
+        "Name", "Position", "Coef", "Fatigue", "Price"
+    ))
+    print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
+    for player in my_team.players:
+        status = "⚠️ High" if player.fatigue >= 0.8 else "OK"
+        print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
+            player.name, player.position, player.player_coef, player.fatigue, player.price
+        ))
+    print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
+    print(f"✅ {my_team.team_name} is ready to play!")
     print("═" * 60)
 
 # === Головний цикл ===
@@ -427,5 +470,7 @@ if my_team is not None:
             buy_players(my_team, players)
         elif command == "5":
             show_stats(my_team)
+        elif command == "6":
+            rest_team(my_team)
         else:
             print("⚠️ Invalid command. Please try again.")

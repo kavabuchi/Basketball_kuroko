@@ -13,12 +13,6 @@ class Team:
     Статичні дані:
         team_stats (dict): Заздалегідь задані характеристики деяких команд.
     """
-    
-    team_stats = {
-        "Bulls": 20,
-        "Celtics": 15,
-        "Warriors": 12
-    }
 
     def __init__(self, team_name, budget):
         """
@@ -38,10 +32,11 @@ class Team:
         Обчислює сумарну ефективність (strength) команди на основі коефіцієнтів гравців.
 
         Returns:
-            float: Загальна сила команди.
+            int: Загальна сила команди.
         """
         return int(sum(player.player_coef for player in self.players))
     
+
     def add_player(self, player):
         """
         Додає гравця до складу команди.
@@ -59,6 +54,8 @@ class Team:
         else:
             print("Your fucking ass have no money for that player")
             return False
+        
+
     def add_player_free(self, player):
         """
         Додає гравця до складу команди без списання бюджету.
@@ -91,14 +88,6 @@ class Team:
             print("You have not this player in your team, stupid bastard")
             return False
         
-    def get_team_strength(self):
-        """
-        Повертає загальну силу команди з урахуванням статистики.
-        
-        Returns:
-            int: Загальна сила команди.
-        """
-        return self.team_stats.get(self.team_name, self.team_strength())
 
     def __str__(self):
         """
