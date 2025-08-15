@@ -22,6 +22,7 @@ def print_main_menu():
     print("3️⃣  Start the match")
     print("4️⃣  Auto-buy full team (up to 5)")
     print("5️⃣  Show stats")
+    print("6️⃣  Rest team")
     print("❌  Exit")
     print("═" * 60)
 

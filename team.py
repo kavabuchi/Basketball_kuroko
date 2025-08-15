@@ -23,7 +23,8 @@ class Team:
             budget (int): Початковий бюджет команди.
         """
         self.team_name = team_name
-        self.players = []
+        self.playing_players = []
+        self.sitting_player = []
         self.budget = budget
         self.team_rate = 0
     
@@ -49,7 +50,7 @@ class Team:
         """
         if self.budget >= player.price:
             self.budget -= player.price
-            self.players.append(player)
+            self.playing_players.append(player)
             return True
         else:
             print("Your fucking ass have no money for that player")
@@ -66,7 +67,7 @@ class Team:
         Returns:
             bool: True, якщо гравця додано.
         """
-        self.players.append(player)
+        self.playing_players.append(player)
         return True
     
     
@@ -80,9 +81,9 @@ class Team:
         Returns:
             bool: True, якщо гравця успішно продано, False – якщо гравця немає в команді.
         """
-        if player in self.players:
+        if player in self.playing_players:
             self.budget += player.price // 2
-            self.players.remove(player)
+            self.playing_players.remove(player)
             return True
         else: 
             print("You have not this player in your team, stupid bastard")
