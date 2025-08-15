@@ -21,6 +21,7 @@ def print_main_menu():
     print("2️⃣  Sell player")
     print("3️⃣  Start the match")
     print("4️⃣  Auto-buy full team (up to 5)")
+    print("5️⃣  Show stats")
     print("❌  Exit")
     print("═" * 60)
 
@@ -183,10 +184,14 @@ def opponent_team(my_team, teams):
         return
 
     print_separator()
+    print("═" * 60)
+    print("🏀 START MATCH 🏀".center(60))
+    print("═" * 60)
     print("Available Opponent Teams:")
     for team in teams:
         if team != my_team:
-            print(f"- {team.team_name} (Players: {len(team.players)})")
+            print(f"- {team.team_name} (Players: {len(team.players)}, Strength: {team.get_team_strength()})")
+    print("═" * 60)
 
     opponent_name = input("Enter name of the opponent team: ").strip()
     opponent = None
@@ -203,20 +208,71 @@ def opponent_team(my_team, teams):
         print(f"⚠️ Opponent team {opponent.team_name} has no players!")
         return
 
+    # Перевірка втоми гравців вашої команди
+    active_players = [player for player in my_team.players if player.fatigue < 1.0]
+    tired_players = [player for player in my_team.players if player.fatigue >= 1.0]
+
+    if not active_players:
+        print("⚠️ All your players are too tired to play! Please rest them.")
+        return
+
+    # Сила команди до матчу
+    pre_match_strength = my_team.get_team_strength()
+
+    print("\n👥 Your Team Status (Before Match):")
+    print(f"Team: {my_team.team_name}, Strength: {pre_match_strength}")
+    print("Active Players:")
+    for player in active_players:
+        print(f"  • {player.name} (Fatigue: {player.fatigue:.2f}, Coef: {player.player_coef:.1f})")
+    if tired_players:
+        print("Tired Players (Will Not Play):")
+        for player in tired_players:
+            print(f"  ⚠️ {player.name} is too tired to play! (Fatigue: {player.fatigue:.2f})")
+    print(f"\nOpponent: {opponent.team_name}, Strength: {opponent.get_team_strength()}")
+
+    # Тимчасово змінюємо гравців команди на активних для матчу
+    original_players = my_team.players[:]
+    my_team.players = active_players
+
     match = Match(my_team, opponent)
     my_score, opp_score = match.play_match()
 
+    # Відновлюємо оригінальний склад
+    my_team.players = original_players
+
+    print("\n═" * 60)
+    print(f"🏀 MATCH RESULT: {my_team.team_name} vs {opponent.team_name} 🏀".center(60))
+    print("═" * 60)
     if my_score is None or opp_score is None:
+        print("⚠️ Match could not be completed.")
         return
 
     if my_score > opp_score:
         my_team.budget += 100000
-        print(f"✅ {my_team.team_name} won! {my_score} - {opp_score}. New budget: ${my_team.budget:,}")
+        print(f"✅ {my_team.team_name} won! {my_score} - {opp_score}")
+        print(f"💰 New budget: ${my_team.budget:,}")
     elif my_score == opp_score:
-        print(f"🤝 It's a draw! {my_score} - {opp_score}.")
+        print(f"🤝 It's a draw! {my_score} - {opp_score}")
     else:
         my_team.budget -= 50000
-        print(f"❌ {opponent.team_name} won! {opp_score} - {my_score}. New budget: ${my_team.budget:,}")
+        print(f"❌ {opponent.team_name} won! {opp_score} - {my_score}")
+        print(f"💰 New budget: ${my_team.budget:,}")
+
+    # Збільшення втоми для активних гравців
+    for player in active_players:
+        player.increase_fatigue()
+
+    # Сила команди після матчу
+    post_match_strength = my_team.get_team_strength()
+
+    print("\n👥 Team Status After Match:")
+    print(f"Team: {my_team.team_name}, Strength: {post_match_strength}")
+    for player in my_team.players:
+        status = "⚠️ Too tired!" if player.fatigue >= 1.0 else "Ready"
+        print(f"  • {player.name} (Fatigue: {player.fatigue:.2f}, Coef: {player.player_coef:.1f}, Status: {status})")
+    if pre_match_strength != post_match_strength:
+        print(f"⚠️ Team strength changed from {pre_match_strength} to {post_match_strength} due to fatigue.")
+    print("═" * 60)
 
 def buy_players(my_team, players):
     if my_team is None:
@@ -314,6 +370,26 @@ def select_existing_team(teams):
         except ValueError:
             print("❌ Please enter a valid number!")
 
+def show_stats(my_team):
+    print_separator()
+    print("═" * 60)
+    print("Team Statistics:".center(60))
+    print("═" * 60)
+    print(f"💰 Budget: ${my_team.budget:,}")
+    print(f"👥 Players: {len(my_team.players)}")
+    print(f"💪 Team Strength: {my_team.get_team_strength()}")
+    print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} ║".format(
+        "Name", "Position", "Coef", "Fatigue", "Price"
+    ))
+    print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
+    for player in my_team.players:
+        status = "⚠️ High" if player.fatigue >= 0.8 else "OK"
+        print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
+            player.name, player.position, player.player_coef, player.fatigue, player.price
+        ))
+    print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
+    print("═" * 60)
+
 # === Головний цикл ===
 
 start_main_menu()
@@ -337,7 +413,7 @@ while True:
 if my_team is not None:
     print_main_menu()
     while True:
-        command = input("\nEnter command (1-4 or Exit): ").strip().lower()
+        command = input("\nEnter command (1-5 or Exit): ").strip().lower()
         if command == "exit":
             print_goodbye()
             break
@@ -349,5 +425,7 @@ if my_team is not None:
             opponent_team(my_team, teams)
         elif command == "4":
             buy_players(my_team, players)
+        elif command == "5":
+            show_stats(my_team)
         else:
             print("⚠️ Invalid command. Please try again.")
