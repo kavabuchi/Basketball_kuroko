@@ -298,7 +298,7 @@ def buy_players(my_team, players):
     print(f"🏀 Players: {len(my_team.players)}/5")
     print(f"💪 Team Strength: {my_team.team_strength()}")
     print("─" * 60)
-    buy_players = input("Do you want to auto-buy up to 5 players? (yes/no): ").lower()
+    buy_players = input("Do you want to auto-buy up to all players? (yes/no): ").lower()
     
     if buy_players == "yes":
         to_remove = []
