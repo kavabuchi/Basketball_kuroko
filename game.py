@@ -23,6 +23,7 @@ def print_main_menu():
     print("4️⃣  Auto-buy full team (up to 5)")
     print("5️⃣  Show stats")
     print("6️⃣  Rest team")
+    print("7️⃣  Manage playing players")
     print("❌  Exit")
     print("═" * 60)
 
@@ -179,7 +180,7 @@ def opponent_team(my_team, teams):
         print("⚠️ Create a team first!")
         return
 
-    if not my_team.players:
+    if not my_team.playing_players:
         print("⚠️ Your team has no players! Buy at least one player to start a match.")
         return
 
@@ -204,7 +205,7 @@ def opponent_team(my_team, teams):
         print("⚠️ No valid opponent team found!")
         return
 
-    if not opponent.players:
+    if not opponent.playing_players:
         print(f"⚠️ Opponent team {opponent.team_name} has no players!")
         return
 
@@ -347,8 +348,8 @@ def select_existing_team(teams):
     print("Existing Teams:".center(60))
     print("═" * 60)
     for idx, team in enumerate(teams):
-        print(f"{idx+1}. {team.team_name} - Budget: ${team.budget:,}, Players: {len(team.players)}")
-        for player in team.players:
+        print(f"{idx+1}. {team.team_name} - Budget: ${team.budget:,}, Players: {len(team.playing_players)}")
+        for player in team.playing_players:
             print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
     print("═" * 60)
 
@@ -359,10 +360,10 @@ def select_existing_team(teams):
                 selected_team = teams[team_idx - 1]  # Не видаляємо команду зі списку
                 print(f"\n✅ You selected team {selected_team.team_name}!")
                 print(f"💰 Budget: ${selected_team.budget:,}")
-                print(f"👥 Players: {len(selected_team.players)}")
+                print(f"👥 Players: {len(selected_team.playing_players)}")
                 print(f"💪 Team Strength: {selected_team.team_strength()}")
                 print("🏃 Team roster:")
-                for player in selected_team.players:
+                for player in selected_team.playing_players:
                     print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
                 return selected_team
             else:
@@ -434,6 +435,19 @@ def rest_team(my_team):
     print(f"✅ {my_team.team_name} is ready to play!")
     print("═" * 60)
 
+
+def managing_playing_players():
+    print("1️⃣  Choose the player for match")
+    print("2️⃣  Choose the player for rest")
+    while True:
+        choice = input("Enter your choice: 1 or 2: ")
+        if choice == "1":
+            # Вибір гравця для гри
+            pass
+        if choice == "2":
+            # Вибір гравця для відпочинку
+            pass
+
 # === Головний цикл ===
 
 start_main_menu()
@@ -457,7 +471,7 @@ while True:
 if my_team is not None:
     print_main_menu()
     while True:
-        command = input("\nEnter command (1-5 or Exit): ").strip().lower()
+        command = input("\nEnter command (1-7 or Exit): ").strip().lower()
         if command == "exit":
             print_goodbye()
             break
@@ -473,5 +487,7 @@ if my_team is not None:
             show_stats(my_team)
         elif command == "6":
             rest_team(my_team)
+        elif command == "7":
+            managing_playing_players(my_team)
         else:
             print("⚠️ Invalid command. Please try again.")

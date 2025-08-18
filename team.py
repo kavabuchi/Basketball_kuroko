@@ -24,7 +24,7 @@ class Team:
         """
         self.team_name = team_name
         self.playing_players = []
-        self.sitting_player = []
+        self.all_players = []
         self.budget = budget
         self.team_rate = 0
     
@@ -35,7 +35,7 @@ class Team:
         Returns:
             int: Загальна сила команди.
         """
-        return int(sum(player.player_coef for player in self.players))
+        return int(sum(player.player_coef for player in self.playing_players))
     
 
     def add_player(self, player):
@@ -81,14 +81,44 @@ class Team:
         Returns:
             bool: True, якщо гравця успішно продано, False – якщо гравця немає в команді.
         """
-        if player in self.playing_players:
+        if player in self.all_players:
             self.budget += player.price // 2
-            self.playing_players.remove(player)
+            self.all_players.remove(player)
             return True
+        elif player in self.playing_players:
+            self.budget += player.price // 2
+            self.playing_players.remove(player) 
+            return True
+            # maybe mistake
         else: 
             print("You have not this player in your team, stupid bastard")
             return False
+
+
+    def select_player_for_playing(self, player):
+        if player not in self.all_players:
+            print("You have not this player in your team, stupid bastard")
+            return False
+        if len(self.playing_players) >= 5:
+            print("You have already 5 players in your team, stupid bastard")
+            return False
+        if player in self.playing_players:
+            print("This player is already in the team, stupid bastard")
+            return False
         
+        self.playing_players.append(player)
+        print("Player selected for playing")
+        return True
+
+
+    def remove_player_from_playing(self, player):
+        if player in self.playing_players:
+            self.playing_players.remove(player)
+            return True 
+        else: 
+            print("You have not this player in your team, stupid bastard")
+            return False
+
 
     def __str__(self):
         """
@@ -100,10 +130,10 @@ class Team:
         divider = "=" * 50
         header = f"🏀 Team: {self.team_name} 🏀"
         budget = f"💰 Budget: ${self.budget:,}"
-        strength = f"💪 Team Strength: {self.get_team_strength()}"
+        strength = f"💪 Team Strength: {self.team_strength()}"
         players_title = "🏀 Players:"
-        players_list = "\n".join([f"  - {player}" for player in self.players]) if self.players else "  No players in the team."
-
+        players_list = "\n".join([f"  - {player}" for player in self.all_players]) if self.all_players else "  No players in the team."
+        players_playing = "\n".join([f"  - {player}" for player in self.playing_players]) if self.playing_players else "  No players in the team."
         return f"\n{divider}\n{header}\n{divider}\n{budget}\n{strength}\n\n{players_title}\n{players_list}\n{divider}\n"
 
 
