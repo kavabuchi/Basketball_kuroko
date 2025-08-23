@@ -7,12 +7,19 @@ class Team:
     Атрибути:
         team_name (str): Назва команди.
         budget (int): Доступний бюджет команди.
-        players (list): Список гравців команди.
+        all_players (list): Список усіх гравців команди.
+        playing_players (list): Список гравців, які беруть участь у матчі.
         team_rate (float): Загальний рейтинг команди (може бути використаний додатково).
     
     Статичні дані:
         team_stats (dict): Заздалегідь задані характеристики деяких команд.
     """
+    
+    team_stats = {
+        "Bulls": 20,
+        "Celtics": 15,
+        "Warriors": 12
+    }
 
     def __init__(self, team_name, budget):
         """
@@ -23,8 +30,8 @@ class Team:
             budget (int): Початковий бюджет команди.
         """
         self.team_name = team_name
-        self.playing_players = []
-        self.all_players = []
+        self.all_players = []  # Усі гравці команди
+        self.playing_players = []  # Гравці, які беруть участь у матчі
         self.budget = budget
         self.team_rate = 0
     
@@ -37,7 +44,15 @@ class Team:
         """
         return int(sum(player.player_coef for player in self.playing_players))
     
+    def get_team_strength(self):
+        """
+        Повертає загальну силу команди з урахуванням статистики.
 
+        Returns:
+            int: Загальна сила команди.
+        """
+        return self.team_stats.get(self.team_name, self.team_strength())
+    
     def add_player(self, player):
         """
         Додає гравця до складу команди.
@@ -46,17 +61,18 @@ class Team:
             player (Player): Об’єкт гравця, якого потрібно додати.
 
         Returns:
-            None
+            bool: True, якщо гравця додано, False – якщо недостатньо бюджету.
         """
         if self.budget >= player.price:
             self.budget -= player.price
-            self.playing_players.append(player)
+            self.all_players.append(player)
+            if len(self.playing_players) < 5:  # Автоматично додаємо до playing_players, якщо менше 5
+                self.playing_players.append(player)
             return True
         else:
-            print("Your fucking ass have no money for that player")
+            print("Your budget is insufficient for this player!")
             return False
-        
-
+    
     def add_player_free(self, player):
         """
         Додає гравця до складу команди без списання бюджету.
@@ -67,9 +83,10 @@ class Team:
         Returns:
             bool: True, якщо гравця додано.
         """
-        self.playing_players.append(player)
+        self.all_players.append(player)
+        if len(self.playing_players) < 5:  # Автоматично додаємо до playing_players, якщо менше 5
+            self.playing_players.append(player)
         return True
-    
     
     def sell_player(self, player):
         """
@@ -84,42 +101,55 @@ class Team:
         if player in self.all_players:
             self.budget += player.price // 2
             self.all_players.remove(player)
+            if player in self.playing_players:
+                self.playing_players.remove(player)
             return True
-        elif player in self.playing_players:
-            self.budget += player.price // 2
-            self.playing_players.remove(player) 
-            return True
-            # maybe mistake
-        else: 
-            print("You have not this player in your team, stupid bastard")
+        else:
+            print("You have not this player in your team!")
             return False
-
-
+    
     def select_player_for_playing(self, player):
+        """
+        Додає гравця до списку граючих гравців.
+
+        Parameters:
+            player (Player): Об’єкт гравця, якого потрібно додати до гри.
+
+        Returns:
+            bool: True, якщо гравця додано, False – якщо гравця немає в команді або ліміт досягнуто.
+        """
         if player not in self.all_players:
-            print("You have not this player in your team, stupid bastard")
+            print("You have not this player in your team!")
             return False
         if len(self.playing_players) >= 5:
-            print("You have already 5 players in your team, stupid bastard")
+            print("You have already 5 players in your team!")
             return False
         if player in self.playing_players:
-            print("This player is already in the team, stupid bastard")
+            print("This player is already in the team!")
             return False
         
         self.playing_players.append(player)
         print("Player selected for playing")
         return True
-
-
+    
     def remove_player_from_playing(self, player):
+        """
+        Видаляє гравця зі списку граючих гравців.
+
+        Parameters:
+            player (Player): Об’єкт гравця, якого потрібно прибрати з гри.
+
+        Returns:
+            bool: True, якщо гравця видалено, False – якщо гравця немає в playing_players.
+        """
         if player in self.playing_players:
             self.playing_players.remove(player)
-            return True 
-        else: 
-            print("You have not this player in your team, stupid bastard")
+            print(f"{player.name} is now resting.")
+            return True
+        else:
+            print("You have not this player in your playing team!")
             return False
-
-
+    
     def __str__(self):
         """
         Повертає строкове представлення команди з інформацією про склад та бюджет у красивому форматі.
@@ -127,19 +157,33 @@ class Team:
         Returns:
             str: Інформація про команду у зручному форматі.
         """
-        divider = "=" * 50
-        header = f"🏀 Team: {self.team_name} 🏀"
+        divider = "═" * 60
+        header = f"🏀 Team: {self.team_name} 🏀".center(60)
         budget = f"💰 Budget: ${self.budget:,}"
-        strength = f"💪 Team Strength: {self.team_strength()}"
+        strength = f"💪 Team Strength: {self.get_team_strength()}"
         players_title = "🏀 Players:"
-        players_list = "\n".join([f"  - {player}" for player in self.all_players]) if self.all_players else "  No players in the team."
-        players_playing = "\n".join([f"  - {player}" for player in self.playing_players]) if self.playing_players else "  No players in the team."
-        return f"\n{divider}\n{header}\n{divider}\n{budget}\n{strength}\n\n{players_title}\n{players_list}\n{divider}\n"
-
+        
+        # Формуємо таблицю гравців
+        players_output = ["║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} │ {:<10} ║".format(
+            "Name", "Position", "Coef", "Fatigue", "Price", "Status"
+        )]
+        players_output.append("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╤════════════╣")
+        
+        if not self.all_players:
+            players_output.append("║ {:<68} │ {:<10} ║".format("No players in the team.", ""))
+        else:
+            for player in self.all_players:
+                status = "Playing" if player in self.playing_players else "Resting"
+                players_output.append("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} │ {:<10} ║".format(
+                    player.name, player.position, player.player_coef, player.fatigue, player.price, status
+                ))
+        
+        players_output.append("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╧════════════╩")
+        
+        return f"\n{divider}\n{header}\n{divider}\n{budget}\n{strength}\n\n{players_title}\n" + "\n".join(players_output) + f"\n{divider}\n"
 
 if __name__ == "__main__":
     team_1 = Team("Lakers", 100)
     team_2 = Team("Bulls", 90)
-
     print(team_1)
     print(team_2)

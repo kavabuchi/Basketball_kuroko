@@ -38,6 +38,7 @@ class Match:
         self.teams = [team_1, team_2]            # зберігаємо їх у об’єкт Match
         print(f"Match: {team_1.team_name} vs {team_2.team_name}")
     
+    
     def play_match(self):
         """
         Моделює матч між двома командами.
@@ -52,29 +53,36 @@ class Match:
         """
         team1_strength = 0
         team1_fatigue = 0
-        team1_count = len(self.teams[0].players)
-        for player in self.teams[0].players:
+        team1_count = len(self.teams[0].playing_players)
+
+        for player in self.teams[0].playing_players:
             coef = player.player_coef
             if player.fatigue >= 0.5 and player.fatigue <= 0.8:
                 coef *= 0.8  # Зменшуємо внесок для втоми 0.5–0.8
+
             elif player.fatigue > 0.8:
                 coef *= 0.5  # Зменшуємо внесок для втоми > 0.8
             team1_strength += coef
             team1_fatigue += player.fatigue
+
         team1_strength = int(team1_strength)
         team1_avg_fatigue = team1_fatigue / team1_count if team1_count > 0 else 0
 
         team2_strength = 0
         team2_fatigue = 0
-        team2_count = len(self.teams[1].players)
-        for player in self.teams[1].players:
+        team2_count = len(self.teams[1].playing_players)
+
+        for player in self.teams[1].playing_players:
             coef = player.player_coef
             if player.fatigue >= 0.5 and player.fatigue <= 0.8:
                 coef *= 0.8
+
             elif player.fatigue > 0.8:
                 coef *= 0.5
+
             team2_strength += coef
             team2_fatigue += player.fatigue
+
         team2_strength = int(team2_strength)
         team2_avg_fatigue = team2_fatigue / team2_count if team2_count > 0 else 0
 

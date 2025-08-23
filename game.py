@@ -125,6 +125,7 @@ def create_team():
     print(my_team)
     return True
 
+
 def buy_player(my_team, players):
     if my_team is None:
         print("⚠️ Create a team first!")
@@ -139,7 +140,7 @@ def buy_player(my_team, players):
     for player in players:
         if buy_player == player.name:
             if my_team.budget >= player.price:
-                if len(my_team.players) < 5:
+                if len(my_team.playing_players) < 5:
                     my_team.add_player(player)
                     players.remove(player)
                     print(f"✅ You bought {player.name}. New budget: ${my_team.budget:,}")
@@ -151,22 +152,23 @@ def buy_player(my_team, players):
     else:
         print("⚠️ Player not found.")
 
+
 def sell_player(my_team, players):
     if my_team is None:
         print("⚠️ Create a team first!")
         return
 
     print_separator()
-    if not my_team.players:
+    if not my_team.playing_players:
         print("⚠️ You have no players to sell.")
         return
 
     print("Your Team Players:")
-    for player in my_team.players:
+    for player in my_team.playing_players:
         print(f"{player}")
 
     sell_name = input("\nEnter player name to sell: ").strip()
-    for player_in_team in my_team.players:
+    for player_in_team in my_team.playing_players:
         if sell_name == player_in_team.name:
             my_team.sell_player(player_in_team)
             players.append(player_in_team)
@@ -174,6 +176,7 @@ def sell_player(my_team, players):
             break
     else:
         print("⚠️ Player not found.")
+
 
 def opponent_team(my_team, teams):
     if my_team is None:
@@ -191,7 +194,7 @@ def opponent_team(my_team, teams):
     print("Available Opponent Teams:")
     for team in teams:
         if team != my_team:
-            print(f"- {team.team_name} (Players: {len(team.players)}, Strength: {team.team_strength()})")
+            print(f"- {team.team_name} (Players: {len(team.playing_players)}, Strength: {team.team_strength()})")
     print("═" * 60)
 
     opponent_name = input("Enter name of the opponent team: ").strip()
@@ -210,8 +213,8 @@ def opponent_team(my_team, teams):
         return
 
     # Перевірка втоми гравців вашої команди
-    active_players = [player for player in my_team.players if player.fatigue < 1.0]
-    tired_players = [player for player in my_team.players if player.fatigue >= 1.0]
+    active_players = [player for player in my_team.playing_players if player.fatigue < 1.0]
+    tired_players = [player for player in my_team.playing_players if player.fatigue >= 1.0]
 
     if not active_players:
         print("⚠️ All your players are too tired to play! Please rest them.")
@@ -232,14 +235,14 @@ def opponent_team(my_team, teams):
     print(f"\nOpponent: {opponent.team_name}, Strength: {opponent.team_strength()}")
 
     # Тимчасово змінюємо гравців команди на активних для матчу
-    original_players = my_team.players[:]
-    my_team.players = active_players
+    original_players = my_team.playing_players[:]
+    my_team.all_players = active_players
 
     match = Match(my_team, opponent)
     my_score, opp_score = match.play_match()
 
     # Відновлюємо оригінальний склад
-    my_team.players = original_players
+    my_team.all_players = original_players
 
     print("\n═" * 60)
     print(f"🏀 MATCH RESULT: {my_team.team_name} vs {opponent.team_name} 🏀".center(60))
@@ -268,14 +271,15 @@ def opponent_team(my_team, teams):
 
     print("\n👥 Team Status After Match:")
     print(f"Team: {my_team.team_name}, Strength: {post_match_strength}")
-    for player in my_team.players:
+    for player in my_team.playing_players:
         status = "⚠️ Too tired!" if player.fatigue >= 1.0 else "Ready"
         print(f"  • {player.name} (Fatigue: {player.fatigue:.2f}, Coef: {player.player_coef:.1f}, Status: {status})")
     if pre_match_strength != post_match_strength:
         print(f"⚠️ Team strength changed from {pre_match_strength} to {post_match_strength} due to fatigue.")
     print("═" * 60)
 
-def buy_players(my_team, players):
+
+def buy_players(my_team, all_players):
     if my_team is None:
         print("⚠️ Create a team first!")
         return
@@ -288,7 +292,7 @@ def buy_players(my_team, players):
         "#", "Name", "Position", "Age", "Skill Coef", "Price"
     ))
     print("╠════╤═══════════════════════════╤═════════════════╤═══════╤════════════╤══════════════╣")
-    for idx, player in enumerate(players):
+    for idx, player in enumerate(all_players):
         print("║ {:<4} │ {:<25} │ {:<15} │ {:<5} │ {:<10.1f} │ {:<12,} ║".format(
             idx + 1, player.name, player.position, player.age, player.player_coef, player.price
         ))
@@ -296,7 +300,7 @@ def buy_players(my_team, players):
 
     print(f"\n👥 Your Team: {my_team.team_name}")
     print(f"💰 Budget: ${my_team.budget:,}")
-    print(f"🏀 Players: {len(my_team.players)}/5")
+    print(f"🏀 Players: {len(my_team.all_players)}/5")
     print(f"💪 Team Strength: {my_team.team_strength()}")
     print("─" * 60)
     buy_players = input("Do you want to auto-buy up to all players? (yes/no): ").lower()
@@ -306,10 +310,10 @@ def buy_players(my_team, players):
         bought_players = []
         
         # Сортуємо гравців за коефіцієнтом (від найвищого до найнижчого)
-        sorted_players = sorted(players, key=lambda x: x.player_coef, reverse=True)
+        sorted_players = sorted(all_players, key=lambda x: x.player_coef, reverse=True)
         
         for player in sorted_players:
-            if my_team.budget >= player.price and len(my_team.players) < 5:
+            if my_team.budget >= player.price and len(my_team.all_players) < 5:
                 my_team.add_player(player)
                 to_remove.append(player)
                 bought_players.append(player)
@@ -342,6 +346,7 @@ def buy_players(my_team, players):
     else:
         print("⚠️ Invalid input. Please enter 'yes' or 'no'.")
 
+
 def select_existing_team(teams):
     print_separator()
     print("═" * 60)
@@ -371,25 +376,27 @@ def select_existing_team(teams):
         except ValueError:
             print("❌ Please enter a valid number!")
 
+
 def show_stats(my_team):
     print_separator()
     print("═" * 60)
     print("Team Statistics:".center(60))
     print("═" * 60)
     print(f"💰 Budget: ${my_team.budget:,}")
-    print(f"👥 Players: {len(my_team.players)}")
+    print(f"👥 Players: {len(my_team.all_players)}")
     print(f"💪 Team Strength: {my_team.team_strength()}")
     print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} ║".format(
         "Name", "Position", "Coef", "Fatigue", "Price"
     ))
     print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
-    for player in my_team.players:
+    for player in my_team.all_players:
         status = "⚠️ High" if player.fatigue >= 0.8 else "OK"
         print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
             player.name, player.position, player.player_coef, player.fatigue, player.price
         ))
     print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
     print("═" * 60)
+
 
 def rest_team(my_team):
     """
@@ -406,7 +413,7 @@ def rest_team(my_team):
     pre_rest_strength = my_team.team_strength()
 
     # Зменшення втоми для всіх гравців
-    for player in my_team.players:
+    for player in my_team.all_players:
         player.decrease_fatigue()
 
     # Сила команди після відпочинку
@@ -426,7 +433,7 @@ def rest_team(my_team):
         "Name", "Position", "Coef", "Fatigue", "Price"
     ))
     print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
-    for player in my_team.players:
+    for player in my_team.all_players:
         status = "⚠️ High" if player.fatigue >= 0.8 else "OK"
         print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
             player.name, player.position, player.player_coef, player.fatigue, player.price
@@ -468,6 +475,7 @@ while True:
     else:
         print("⚠️ Invalid choice. Please enter 1, 2, or Exit.")
 
+
 if my_team is not None:
     print_main_menu()
     while True:
@@ -488,6 +496,6 @@ if my_team is not None:
         elif command == "6":
             rest_team(my_team)
         elif command == "7":
-            managing_playing_players(my_team)
+            managing_playing_players()
         else:
             print("⚠️ Invalid command. Please try again.")
