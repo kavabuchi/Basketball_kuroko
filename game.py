@@ -4,31 +4,40 @@ from match import Match
 
 # === Інтерфейсні функції ===
 
-def print_main_menu():
-    print("=" * 50)
-    print("🏀 WELCOME TO NBA SIMULATION GAME 🏀".center(50))
-    print("=" * 50)
-    print("What would you like to do?")
-    print("-" * 50)
-    print("1️⃣  Buy new player (up to 5 players)")
-    print("2️⃣  Sell player")
-    print("3️⃣  Start the match")
-    print("4️⃣  Buy full team (auto-buy up to 5)")
+def start_main_menu():
+    print("═" * 60)
+    print("🏀 WELCOME TO NBA SIMULATION GAME 🏀".center(60))
+    print("═" * 60)
+    print("What would you like to do?".center(60))
+    print("1️⃣  Create a new team")
+    print("2️⃣  Select an existing team")
     print("❌  Exit")
-    print("-" * 50)
+    print("═" * 60)
+
+def print_main_menu():
+    print("═" * 60)
+    print("What would you like to do?".center(60))
+    print("1️⃣  Buy new player")
+    print("2️⃣  Sell player")
+    print("3️⃣  Manage lineup (select 5 players for match)")
+    print("4️⃣  Start the match")
+    print("5️⃣  Auto-buy players")
+    print("6️⃣  Show stats")
+    print("7️⃣  Rest team")
+    print("❌  Exit")
+    print("═" * 60)
 
 def print_goodbye():
-    print("\n" + "=" * 50)
-    print("🏁 GAME OVER – Thanks for playing! 🏀".center(50))
-    print("=" * 50)
+    print("\n" + "═" * 60)
+    print("🏁 GAME OVER – Thanks for playing! 🏀".center(60))
+    print("═" * 60)
 
 def print_separator():
-    print("\n" + "-" * 50 + "\n")
+    print("\n" + "─" * 60 + "\n")
 
 # === Створення гравців для команд ===
 
 def create_team_players():
-    """Створює гравців для різних команд"""
     warriors_players = [
         Player("Stephen Curry", 35, "Point_Guard", 0.1, 0.95, 120000),
         Player("Klay Thompson", 33, "Shooting_Guard", 0.15, 0.88, 95000),
@@ -36,7 +45,6 @@ def create_team_players():
         Player("Andrew Wiggins", 28, "Small_Forward", 0.12, 0.82, 80000),
         Player("Kevon Looney", 27, "Center", 0.18, 0.78, 70000)
     ]
-    
     celtics_players = [
         Player("Jayson Tatum", 25, "Small_Forward", 0.08, 0.92, 110000),
         Player("Jaylen Brown", 27, "Shooting_Guard", 0.12, 0.89, 105000),
@@ -44,7 +52,6 @@ def create_team_players():
         Player("Al Horford", 37, "Power_Forward", 0.25, 0.80, 75000),
         Player("Robert Williams", 25, "Center", 0.22, 0.82, 78000)
     ]
-    
     bulls_players = [
         Player("Zach LaVine", 28, "Shooting_Guard", 0.1, 0.87, 95000),
         Player("DeMar DeRozan", 34, "Small_Forward", 0.18, 0.85, 90000),
@@ -52,21 +59,28 @@ def create_team_players():
         Player("Patrick Williams", 22, "Power_Forward", 0.15, 0.76, 65000),
         Player("Nikola Vucevic", 32, "Center", 0.2, 0.83, 85000)
     ]
-    
-    return warriors_players, celtics_players, bulls_players
+    lakers_players = [
+        Player("LeBron James", 39, "Small_Forward", 0.1, 0.95, 100000),
+        Player("Anthony Davis", 31, "Power_Forward", 0.15, 0.92, 95000),
+        Player("D'Angelo Russell", 28, "Point_Guard", 0.2, 0.85, 75000),
+        Player("Austin Reaves", 26, "Shooting_Guard", 0.12, 0.83, 70000),
+        Player("Rui Hachimura", 26, "Small_Forward", 0.18, 0.8, 68000)
+    ]
+    return warriors_players, celtics_players, bulls_players, lakers_players
 
 # === Ініціалізація ===
 
-# Створюємо команди з гравцями
-warriors_players, celtics_players, bulls_players = create_team_players()
+my_team = None  # Ініціалізація my_team
+
+warriors_players, celtics_players, bulls_players, lakers_players = create_team_players()
 
 teams = [ 
     Team("Warriors", 95000),
     Team("Celtics", 90000),
-    Team("Bulls", 92000)
+    Team("Bulls", 92000),
+    Team("Lakers", 98000)
 ]
 
-# Додаємо гравців до команд
 for player in warriors_players:
     teams[0].add_player_free(player)
 
@@ -76,157 +90,208 @@ for player in celtics_players:
 for player in bulls_players:
     teams[2].add_player_free(player)
 
-# Список вільних гравців для покупки
+for player in lakers_players:
+    teams[3].add_player_free(player)
+
+# Автоматично обираємо склад для всіх команд
+for team in teams:
+    team.auto_select_lineup()
+
+# Список доступних гравців для покупки (без дублювання)
 players = [
-    Player("LeBron James", 39, "Small_Forward", 0.1, 0.95, 100000),
-    Player("Anthony Davis", 31, "Power_Forward", 0.15, 0.92, 95000),
-    Player("D'Angelo Russell", 28, "Point_Guard", 0.2, 0.85, 75000),
-    Player("Austin Reaves", 26, "Shooting_Guard", 0.12, 0.83, 70000),
-    Player("Rui Hachimura", 26, "Small_Forward", 0.18, 0.8, 68000),
-    Player("Jarred Vanderbilt", 25, "Power_Forward", 0.2, 0.78, 65000),
-    Player("Jaxson Hayes", 24, "Center", 0.22, 0.76, 60000)
+    Player("Kevin Durant", 35, "Small_Forward", 0.1, 0.94, 110000),
+    Player("Kyrie Irving", 31, "Point_Guard", 0.12, 0.90, 100000),
+    Player("James Harden", 34, "Shooting_Guard", 0.15, 0.88, 95000),
+    Player("Giannis Antetokounmpo", 29, "Power_Forward", 0.08, 0.93, 120000),
+    Player("Joel Embiid", 29, "Center", 0.2, 0.91, 105000)
 ]
-
-# === Функції вибору команди ===
-
-def create_new_team():
-    """
-    Створює нову команду з введеними користувачем параметрами.
-    
-    Returns:
-        Team: Створена команда.
-    """
-    team_name = input("Введіть назву вашої нової команди: ").strip()
-    while True:
-        try:
-            budget = int(input("Введіть стартовий бюджет (наприклад, 100000): ").strip())
-            break
-        except ValueError:
-            print("Введіть ціле число для бюджету!")
-    
-    new_team = Team(team_name, budget)
-    print(f"✅ Ви створили команду {team_name} з бюджетом {budget} і без гравців.")
-    return new_team
-
-def select_existing_team(teams):
-    """
-    Дозволяє користувачу вибрати існуючу команду для викупу.
-    
-    Parameters:
-        teams (list): Список доступних команд.
-    
-    Returns:
-        Team: Вибрана команда.
-    """
-    print("\n🏀 Доступні команди для викупу:")
-    print("=" * 50)
-    for idx, team in enumerate(teams):
-        print(f"\n{idx+1}. {team.team_name}")
-        print(f"   💰 Бюджет: {team.budget}")
-        print(f"   👥 Гравців: {len(team.players)}")
-        print("   🏃 Склад:")
-        for player in team.players:
-            print(f"      • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
-        print("-" * 30)
-    
-    while True:
-        try:
-            select = int(input("\nВведіть номер команди для викупу: ").strip())
-            if 1 <= select <= len(teams):
-                selected_team = teams.pop(select-1)
-                print(f"\n✅ Ви викупили команду {selected_team.team_name}!")
-                print(f"💰 Бюджет: {selected_team.budget}")
-                print(f"👥 Гравців: {len(selected_team.players)}")
-                print("🏃 Ваш склад:")
-                for player in selected_team.players:
-                    print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
-                return selected_team
-            else:
-                print("❌ Невірний номер команди!")
-        except ValueError:
-            print("❌ Введіть ціле число!")
-
-def choose_team(teams):
-    """
-    Головна функція для вибору команди користувачем.
-    
-    Parameters:
-        teams (list): Список доступних команд.
-    
-    Returns:
-        Team: Вибрана або створена команда.
-    """
-    print("=" * 50)
-    print("🏀 NBA SIMULATION: Team Selection 🏀".center(50))
-    print("=" * 50)
-    print("1️⃣  Створити нову команду")
-    print("2️⃣  Викупити існуючу команду")
-    print("-" * 50)
-    
-    while True:
-        team_choice = input("Виберіть опцію (1 або 2): ").strip()
-        if team_choice == "1":
-            return create_new_team()
-        elif team_choice == "2":
-            return select_existing_team(teams)
-        else:
-            print("❌ Введіть 1 або 2!")
-
-# === Вибір або створення команди ===
-my_team = choose_team(teams)
 
 # === Функції гри ===
 
+def create_team():
+    global my_team
+    print_separator()
+    team_name = input("Enter a name for your team: ").strip()
+    if not team_name:
+        print("⚠️ Team name cannot be empty!")
+        return False
+    try:
+        team_budget = int(input("Enter your team budget (100000 to 1000000): "))
+        if not (100000 <= team_budget <= 1000000):
+            print("⚠️ Budget must be between 100000 and 1000000!")
+            return False
+    except ValueError:
+        print("⚠️ Budget must be a valid number!")
+        return False
+
+    my_team = Team(team_name, team_budget)
+    print(f"✅ Team '{team_name}' created with budget ${team_budget:,}!")
+    print(my_team)
+    return True
+
 def buy_player(my_team, players):
+    if my_team is None:
+        print("⚠️ Create a team first!")
+        return
+
     print_separator()
     print("Available Players:")
     for player in players:
         print(f"{player}")
 
-    buy_player = input("\nEnter player name to buy: ") 
+    buy_player = input("\nEnter player name to buy: ").strip()
     for player in players:
         if buy_player == player.name:
             if my_team.budget >= player.price:
-                if len(my_team.players) < 5:
-                    my_team.add_player(player)
-                    players.remove(player)
-                    print(f"You bought {player.name}. New budget: {my_team.budget}")
-                else:
-                    print("You already have 5 players.")
+                my_team.add_player(player)
+                players.remove(player)
+                print(f"✅ You bought {player.name}. New budget: ${my_team.budget:,}")
+                print(f"👥 Total players in roster: {len(my_team.players)}")
             else:
-                print("Not enough budget.")
+                print("⚠️ Not enough budget.")
             break
     else:
-        print("Player not found.")
+        print("⚠️ Player not found.")
 
 def sell_player(my_team, players):
+    if my_team is None:
+        print("⚠️ Create a team first!")
+        return
+
     print_separator()
     if not my_team.players:
-        print("You have no players to sell.")
+        print("⚠️ You have no players to sell.")
         return
 
     print("Your Team Players:")
     for player in my_team.players:
         print(f"{player}")
 
-    sell_name = input("\nEnter player name to sell: ")
+    sell_name = input("\nEnter player name to sell: ").strip()
     for player_in_team in my_team.players:
         if sell_name == player_in_team.name:
             my_team.sell_player(player_in_team)
             players.append(player_in_team)
-            print(f"You sold {player_in_team.name}. New budget: {my_team.budget}")
+            print(f"✅ You sold {player_in_team.name}. New budget: ${my_team.budget:,}")
             break
     else:
-        print("Player not found.")
+        print("⚠️ Player not found.")
+
+def manage_lineup(my_team):
+    """
+    Функція для управління складом команди (вибір 5 гравців для матчу).
+    """
+    if my_team is None:
+        print("⚠️ Create a team first!")
+        return
+
+    if len(my_team.players) < 5:
+        print(f"⚠️ Your team has only {len(my_team.players)} players! You need at least 5 players to form a lineup.")
+        return
+
+    print_separator()
+    print("═" * 60)
+    print("🏀 LINEUP MANAGEMENT 🏀".center(60))
+    print("═" * 60)
+    
+    # Показати поточний статус
+    my_team.show_lineup_status()
+    
+    print("\nOptions:")
+    print("1️⃣  Auto-select 5 best players")
+    print("2️⃣  Manual player selection")
+    print("3️⃣  Remove player from lineup")
+    print("4️⃣  Clear lineup")
+    print("5️⃣  Show full roster")
+    print("❌  Back to main menu")
+    
+    while True:
+        choice = input("\nChoose an option: ").strip()
+        
+        if choice == "1":
+            my_team.auto_select_lineup()
+            break
+        elif choice == "2":
+            print("\nFull Roster:")
+            for i, player in enumerate(my_team.players, 1):
+                selected = "✅" if player in my_team.selected_lineup else "  "
+                print(f"{selected} {i}. {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+            
+            if len(my_team.selected_lineup) >= 5:
+                print("⚠️ Lineup is full! Remove a player first.")
+                continue
+                
+            try:
+                player_num = int(input(f"\nEnter player number to add (1-{len(my_team.players)}): "))
+                if 1 <= player_num <= len(my_team.players):
+                    selected_player = my_team.players[player_num - 1]
+                    my_team.select_player_for_lineup(selected_player)
+                else:
+                    print("⚠️ Invalid player number!")
+            except ValueError:
+                print("⚠️ Please enter a valid number!")
+                
+        elif choice == "3":
+            if not my_team.selected_lineup:
+                print("⚠️ No players in lineup to remove!")
+                continue
+                
+            print("\nCurrent Lineup:")
+            for i, player in enumerate(my_team.selected_lineup, 1):
+                print(f"{i}. {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+                
+            try:
+                player_num = int(input(f"\nEnter player number to remove (1-{len(my_team.selected_lineup)}): "))
+                if 1 <= player_num <= len(my_team.selected_lineup):
+                    selected_player = my_team.selected_lineup[player_num - 1]
+                    my_team.remove_player_from_lineup(selected_player)
+                else:
+                    print("⚠️ Invalid player number!")
+            except ValueError:
+                print("⚠️ Please enter a valid number!")
+                
+        elif choice == "4":
+            my_team.clear_lineup()
+        elif choice == "5":
+            print("\nFull Roster:")
+            for i, player in enumerate(my_team.players, 1):
+                selected = "✅" if player in my_team.selected_lineup else "  "
+                print(f"{selected} {i}. {player}")
+        elif choice.lower() == "exit":
+            break
+        else:
+            print("⚠️ Invalid choice!")
+            
+        my_team.show_lineup_status()
 
 def opponent_team(my_team, teams):
+    if my_team is None:
+        print("⚠️ Create a team first!")
+        return
+
+    if len(my_team.players) < 5:
+        print("⚠️ Your team needs at least 5 players to start a match!")
+        return
+        
+    if len(my_team.selected_lineup) < 5:
+        print("⚠️ You must select 5 players for the match first!")
+        print("Use 'Manage lineup' option to select players.")
+        return
+
     print_separator()
+    print("═" * 60)
+    print("🏀 START MATCH 🏀".center(60))
+    print("═" * 60)
     print("Available Opponent Teams:")
     for team in teams:
         if team != my_team:
-            print(f"- {team.team_name}")
-    
-    opponent_name = input("Enter name of the opponent team: ")
+            # Ensure opponent team has a lineup selected
+            if len(team.selected_lineup) < 5 and len(team.players) >= 5:
+                team.auto_select_lineup()
+            print(f"- {team.team_name} (Players: {len(team.players)}, Strength: {team.team_strength()})")
+    print("═" * 60)
+
+    opponent_name = input("Enter name of the opponent team: ").strip()
     opponent = None
     for team in teams:
         if team.team_name == opponent_name and team != my_team:
@@ -237,63 +302,284 @@ def opponent_team(my_team, teams):
         print("⚠️ No valid opponent team found!")
         return
 
+    if not opponent.players:
+        print(f"⚠️ Opponent team {opponent.team_name} has no players!")
+        return
+
+    # Перевірка втоми гравців з обраного складу
+    active_lineup = [player for player in my_team.selected_lineup if player.fatigue < 1.0]
+    tired_lineup = [player for player in my_team.selected_lineup if player.fatigue >= 1.0]
+
+    if len(active_lineup) < 5:
+        print("⚠️ Not enough active players in your lineup! Some players are too tired.")
+        print("Tired players from lineup:")
+        for player in tired_lineup:
+            print(f"  ⚠️ {player.name} (Fatigue: {player.fatigue:.2f})")
+        print("Please rest your team or change your lineup.")
+        return
+
+    # Сила команди до матчу
+    pre_match_strength = my_team.team_strength()
+
+    print("\n👥 Your Selected Lineup (Before Match):")
+    print(f"Team: {my_team.team_name}, Lineup Strength: {pre_match_strength}")
+    print("Active Players in Lineup:")
+    for player in my_team.selected_lineup:
+        status = "⚠️ Tired" if player.fatigue >= 1.0 else "Ready"
+        print(f"  • {player.name} (Fatigue: {player.fatigue:.2f}, Coef: {player.player_coef:.1f}, Status: {status})")
+    print(f"\nOpponent: {opponent.team_name}, Strength: {opponent.team_strength()}")
+
     match = Match(my_team, opponent)
     my_score, opp_score = match.play_match()
 
+    print("\n═" * 60)
+    print(f"🏀 MATCH RESULT: {my_team.team_name} vs {opponent.team_name} 🏀".center(60))
+    print("═" * 60)
+    if my_score is None or opp_score is None:
+        print("⚠️ Match could not be completed.")
+        return
+
     if my_score > opp_score:
         my_team.budget += 100000
-        print(f"{my_team.team_name} won! {my_score} - {opp_score}. New budget: {my_team.budget}")
+        print(f"✅ {my_team.team_name} won! {my_score} - {opp_score}")
+        print(f"💰 New budget: ${my_team.budget:,}")
     elif my_score == opp_score:
-        print(f"🤝 It's a draw! {my_score} - {opp_score}.")
+        print(f"🤝 It's a draw! {my_score} - {opp_score}")
     else:
         my_team.budget -= 50000
-        print(f"{opponent.team_name} won! {opp_score} - {my_score}. New budget: {my_team.budget}")
+        print(f"❌ {opponent.team_name} won! {opp_score} - {my_score}")
+        print(f"💰 New budget: ${my_team.budget:,}")
+
+    # Збільшення втоми для гравців з обраного складу
+    for player in my_team.selected_lineup:
+        player.increase_fatigue()
+
+    # Сила команди після матчу
+    post_match_strength = my_team.team_strength()
+
+    print("\n👥 Selected Lineup Status After Match:")
+    print(f"Team: {my_team.team_name}, Lineup Strength: {post_match_strength}")
+    for player in my_team.selected_lineup:
+        status = "⚠️ Too tired!" if player.fatigue >= 1.0 else "Ready"
+        print(f"  • {player.name} (Fatigue: {player.fatigue:.2f}, Coef: {player.player_coef:.1f}, Status: {status})")
+    if pre_match_strength != post_match_strength:
+        print(f"⚠️ Lineup strength changed from {pre_match_strength} to {post_match_strength} due to fatigue.")
+    print("═" * 60)
 
 def buy_players(my_team, players):
-    print_separator()
-    print("Available Players:")
-    for player in players:
-        print(f"{player}")
+    if my_team is None:
+        print("⚠️ Create a team first!")
+        return
 
-    buy_players = input("\nDo you want to auto-buy up to 5 players? (yes/no): ").lower()
+    print_separator()
+    print("═" * 60)
+    print("🏀 AUTO-BUY PLAYERS 🏀".center(60))
+    print("═" * 60)
+    print("║ {:<4} │ {:<25} │ {:<15} │ {:<5} │ {:<10} │ {:<12} ║".format(
+        "#", "Name", "Position", "Age", "Skill Coef", "Price"
+    ))
+    print("╠════╤═══════════════════════════╤═════════════════╤═══════╤════════════╤══════════════╣")
+    for idx, player in enumerate(players):
+        print("║ {:<4} │ {:<25} │ {:<15} │ {:<5} │ {:<10.1f} │ {:<12,} ║".format(
+            idx + 1, player.name, player.position, player.age, player.player_coef, player.price
+        ))
+    print("╩════╧═══════════════════════════╧═════════════════╧═══════╧════════════╧══════════════╩")
+
+    print(f"\n👥 Your Team: {my_team.team_name}")
+    print(f"💰 Budget: ${my_team.budget:,}")
+    print(f"🏀 Players in Roster: {len(my_team.players)}")
+    print(f"⭐ Selected Lineup: {len(my_team.selected_lineup)}/5")
+    print(f"💪 Team Strength (Selected): {my_team.team_strength()}")
+    print("─" * 60)
+    
+    max_players = input("How many players do you want to buy? (Enter number or 'all' for as many as budget allows): ").strip().lower()
+    if max_players == "all":
+        max_buy = len(players)
+    else:
+        try:
+            max_buy = int(max_players)
+        except ValueError:
+            print("⚠️ Invalid input. Using default of 5 players.")
+            max_buy = 5
+    
+    buy_players = input(f"Do you want to auto-buy up to {max_buy} players? (yes/no): ").lower()
+    
     if buy_players == "yes":
         to_remove = []
-        for player in players:
-            if my_team.budget >= player.price:
-                if len(my_team.players) < 5:
-                    my_team.add_player(player)
-                    to_remove.append(player)
-                    print(f"✅ You bought {player.name}. Budget left: {my_team.budget}")
+        bought_players = []
+        
+        # Сортуємо гравців за коефіцієнтом (від найвищого до найнижчого)
+        sorted_players = sorted(players, key=lambda x: x.player_coef, reverse=True)
+        
+        bought_count = 0
+        for player in sorted_players:
+            if my_team.budget >= player.price and bought_count < max_buy:
+                my_team.add_player(player)
+                to_remove.append(player)
+                bought_players.append(player)
+                bought_count += 1
+                print(f"✅ Bought {player.name} ({player.position}) for ${player.price:,}. Budget left: ${my_team.budget:,}")
+        
         for player in to_remove:
             players.remove(player)
-
+        
+        if bought_players:
+            print("\n═" * 60)
+            print("🏀 PURCHASE SUMMARY 🏀".center(60))
+            print("═" * 60)
+            print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} ║".format(
+                "Name", "Position", "Skill Coef", "Price"
+            ))
+            print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╣")
+            for player in bought_players:
+                print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12,} ║".format(
+                    player.name, player.position, player.player_coef, player.price
+                ))
+            print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╩")
+            print(f"✅ Total players bought: {len(bought_players)}")
+            print(f"💰 New budget: ${my_team.budget:,}")
+            print(f"💪 New team strength: {my_team.team_strength()}")
+            print("═" * 60)
+        else:
+            print("⚠️ No players bought. Insufficient budget or no suitable players.")
     elif buy_players == "no":
         print("No players bought.")
     else:
-        print("Invalid input. Please enter 'yes' or 'no'.")
+        print("⚠️ Invalid input. Please enter 'yes' or 'no'.")
+
+def select_existing_team(teams):
+    print_separator()
+    print("═" * 60)
+    print("Existing Teams:".center(60))
+    print("═" * 60)
+    for idx, team in enumerate(teams):
+        print(f"{idx+1}. {team.team_name} - Budget: ${team.budget:,}, Players: {len(team.players)}")
+        for player in team.players:
+            print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+    print("═" * 60)
+
+    while True:
+        try:
+            team_idx = int(input(f"\nChoose a team to play with (1-{len(teams)}): "))
+            if 1 <= team_idx <= len(teams):
+                selected_team = teams[team_idx - 1]  # Не видаляємо команду зі списку
+                print(f"\n✅ You selected team {selected_team.team_name}!")
+                print(f"💰 Budget: ${selected_team.budget:,}")
+                print(f"👥 Players: {len(selected_team.players)}")
+                print(f"💪 Team Strength: {selected_team.team_strength()}")
+                print("🏃 Team roster:")
+                for player in selected_team.players:
+                    print(f"   • {player.name} ({player.position}) - Coef: {player.player_coef:.1f}")
+                return selected_team
+            else:
+                print("❌ Invalid team number!")
+        except ValueError:
+            print("❌ Please enter a valid number!")
+
+def show_stats(my_team):
+    print_separator()
+    print("═" * 60)
+    print("Team Statistics:".center(60))
+    print("═" * 60)
+    print(f"💰 Budget: ${my_team.budget:,}")
+    print(f"👥 Players: {len(my_team.players)}")
+    print(f"💪 Team Strength: {my_team.team_strength()}")
+    print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} ║".format(
+        "Name", "Position", "Coef", "Fatigue", "Price"
+    ))
+    print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
+    for player in my_team.players:
+        status = "⚠️ High" if player.fatigue >= 0.8 else "OK"
+        print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
+            player.name, player.position, player.player_coef, player.fatigue, player.price
+        ))
+    print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
+    print("═" * 60)
+
+def rest_team(my_team):
+    """
+    Дозволяє команді відпочити, зменшуючи втому всіх гравців і виводячи оновлений статус команди.
+
+    Parameters:
+        my_team (Team): Команда, гравці якої відпочинуть.
+
+    Returns:
+        None
+    """
+
+    # Сила команди до відпочинку
+    pre_rest_strength = my_team.team_strength()
+
+    # Зменшення втоми для всіх гравців
+    for player in my_team.players:
+        player.decrease_fatigue()
+
+    # Сила команди після відпочинку
+    post_rest_strength = my_team.team_strength()
+
+    # Виведення статусу
+    print("\n" + "═" * 60)
+    print("🏀 TEAM REST 🏀".center(60))
+    print("═" * 60)
+    print(f"👥 Team: {my_team.team_name}")
+    print(f"💪 Team Strength Before Rest: {pre_rest_strength}")
+    print(f"💪 Team Strength After Rest: {post_rest_strength}")
+    if pre_rest_strength != post_rest_strength:
+        print(f"✅ Team strength increased from {pre_rest_strength} to {post_rest_strength} due to rest!")
+    print("\nPlayers Status After Rest:")
+    print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} ║".format(
+        "Name", "Position", "Coef", "Fatigue", "Price"
+    ))
+    print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
+    for player in my_team.players:
+        status = "⚠️ High" if player.fatigue >= 0.8 else "OK"
+        print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
+            player.name, player.position, player.player_coef, player.fatigue, player.price
+        ))
+    print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
+    print(f"✅ {my_team.team_name} is ready to play!")
+    print("═" * 60)
 
 # === Головний цикл ===
 
-print_main_menu()
-
+start_main_menu()
 while True:
-    command = input("\nEnter command (1-4 or Exit): ").strip()
-
-    if command.lower() == "exit":
+    choice = input("\nChoose an option (1, 2, or Exit): ").lower()
+    if choice == "exit":
         print_goodbye()
         break
-
-    elif command == "1":
-        buy_player(my_team, players)
-
-    elif command == "2":
-        sell_player(my_team, players)
-
-    elif command == "3":
-        opponent_team(my_team, teams)
-
-    elif command == "4":
-        buy_players(my_team, players)
-
+    elif choice == "1":
+        if create_team():
+            break  # Перейти до основного меню після створення команди
+    elif choice == "2":
+        if not teams:
+            print("⚠️ No existing teams available!")
+        else:
+            my_team = select_existing_team(teams)
+            break
     else:
-        print("⚠️ Invalid command. Please try again.")
+        print("⚠️ Invalid choice. Please enter 1, 2, or Exit.")
+
+if my_team is not None:
+    print_main_menu()
+    while True:
+        command = input("\nEnter command (1-7 or Exit): ").strip().lower()
+        if command == "exit":
+            print_goodbye()
+            break
+        elif command == "1":
+            buy_player(my_team, players)
+        elif command == "2":
+            sell_player(my_team, players)
+        elif command == "3":
+            manage_lineup(my_team)
+        elif command == "4":
+            opponent_team(my_team, teams)
+        elif command == "5":
+            buy_players(my_team, players)
+        elif command == "6":
+            show_stats(my_team)
+        elif command == "7":
+            rest_team(my_team)
+        else:
+            print("⚠️ Invalid command. Please try again.")

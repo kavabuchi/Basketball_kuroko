@@ -7,18 +7,13 @@ class Team:
     Атрибути:
         team_name (str): Назва команди.
         budget (int): Доступний бюджет команди.
-        players (list): Список гравців команди.
+        players (list): Повний список гравців команди (ростер).
+        selected_lineup (list): Список з 5 обраних гравців для матчу.
         team_rate (float): Загальний рейтинг команди (може бути використаний додатково).
     
     Статичні дані:
         team_stats (dict): Заздалегідь задані характеристики деяких команд.
     """
-    
-    team_stats = {
-        "Bulls": 20,
-        "Celtics": 15,
-        "Warriors": 12
-    }
 
     def __init__(self, team_name, budget):
         """
@@ -29,50 +24,62 @@ class Team:
             budget (int): Початковий бюджет команди.
         """
         self.team_name = team_name
-        self.players = []
+        self.players = []  # Повний ростер команди
+        self.selected_lineup = []  # Обрані гравці для матчу (максимум 5)
         self.budget = budget
         self.team_rate = 0
     
     def team_strength(self):
         """
-        Обчислює сумарну ефективність (strength) команди на основі коефіцієнтів гравців.
+        Обчислює сумарну ефективність (strength) команди на основі коефіцієнтів обраних гравців для матчу.
 
         Returns:
-            float: Загальна сила команди.
+            int: Загальна сила команди (на основі обраного складу).
         """
-        return int(sum(player.player_coef for player in self.players))
+        return int(sum(player.player_coef for player in self.selected_lineup))
     
+    def get_team_strength(self):
+        """
+        Псевдонім для team_strength() для сумісності з існуючим кодом.
+
+        Returns:
+            int: Загальна сила команди.
+        """
+        return self.team_strength()
+    
+
     def add_player(self, player):
         """
-        Додає гравця до складу команди.
+        Додає гравця до ростеру команди (без обмеження кількості).
 
         Parameters:
             player (Player): Об'єкт гравця, якого потрібно додати.
 
         Returns:
-            bool: True, якщо гравець успішно доданий, False - якщо недостатньо коштів.
+            bool: True, якщо гравця успішно додано, False - якщо недостатньо коштів.
         """
         if self.budget >= player.price:
             self.budget -= player.price
             self.players.append(player)
-            print(f"✅ Успішно куплено гравця: {player.name}")
             return True
         else:
-            print(f"❌ Недостатньо коштів для покупки гравця {player.name}")
+            print("Недостатньо коштів для покупки цього гравця!")
             return False
-    
+        
+
     def add_player_free(self, player):
         """
-        Додає гравця до складу команди безкоштовно (для створення початкового складу).
+        Додає гравця до складу команди без списання бюджету.
 
         Parameters:
-            player (Player): Об'єкт гравця, якого потрібно додати.
+            player (Player): Об’єкт гравця, якого потрібно додати.
 
         Returns:
-            bool: True, якщо гравець успішно доданий.
+            bool: True, якщо гравця додано.
         """
         self.players.append(player)
         return True
+    
     
     def sell_player(self, player):
         """
@@ -87,20 +94,100 @@ class Team:
         if player in self.players:
             self.budget += player.price // 2
             self.players.remove(player)
-            print(f"✅ Успішно продано гравця: {player.name}")
+            # Також видаляємо з обраного складу, якщо він там є
+            if player in self.selected_lineup:
+                self.selected_lineup.remove(player)
             return True
         else: 
-            print(f"❌ Гравець {player.name} не знаходиться в вашій команді")
+            print("Цього гравця немає у вашій команді!")
+            return False
+    
+    def select_player_for_lineup(self, player):
+        """
+        Додає гравця до обраного складу для матчу (максимум 5 гравців).
+
+        Parameters:
+            player (Player): Гравець для додавання до складу.
+
+        Returns:
+            bool: True, якщо гравця додано, False - якщо склад повний або гравця немає в ростері.
+        """
+        if player not in self.players:
+            print("Цей гравець не належить до вашої команди!")
             return False
         
-    def get_team_strength(self):
+        if player in self.selected_lineup:
+            print("Цей гравець вже в обраному складі!")
+            return False
+            
+        if len(self.selected_lineup) >= 5:
+            print("Обраний склад вже повний (5 гравців)!")
+            return False
+            
+        self.selected_lineup.append(player)
+        print(f"✅ {player.name} додано до складу для матчу!")
+        return True
+    
+    def remove_player_from_lineup(self, player):
         """
-        Повертає загальну силу команди з урахуванням статистики.
+        Видаляє гравця з обраного складу для матчу.
+
+        Parameters:
+            player (Player): Гравець для видалення зі складу.
+
+        Returns:
+            bool: True, якщо гравця видалено, False - якщо гравця немає в складі.
+        """
+        if player in self.selected_lineup:
+            self.selected_lineup.remove(player)
+            print(f"✅ {player.name} видалено зі складу для матчу!")
+            return True
+        else:
+            print("Цього гравця немає в обраному складі!")
+            return False
+    
+    def auto_select_lineup(self):
+        """
+        Автоматично обирає 5 найкращих гравців для матчу (за коефіцієнтом ефективності).
         
         Returns:
-            int: Загальна сила команди.
+            bool: True, якщо склад сформовано, False - якщо недостатньо гравців.
         """
-        return self.team_stats.get(self.team_name, self.team_strength())
+        if len(self.players) < 5:
+            print("Недостатньо гравців для формування складу (потрібно мінімум 5)!")
+            return False
+        
+        # Сортуємо гравців за коефіцієнтом ефективності (від найвищого)
+        sorted_players = sorted(self.players, key=lambda x: x.player_coef, reverse=True)
+        
+        # Обираємо 5 найкращих
+        self.selected_lineup = sorted_players[:5]
+        
+        print("✅ Автоматично обрано 5 найкращих гравців для матчу:")
+        for i, player in enumerate(self.selected_lineup, 1):
+            print(f"  {i}. {player.name} ({player.position}) - Коеф: {player.player_coef:.1f}")
+        
+        return True
+    
+    def clear_lineup(self):
+        """
+        Очищує обраний склад для матчу.
+        """
+        self.selected_lineup = []
+        print("✅ Склад для матчу очищено!")
+    
+    def show_lineup_status(self):
+        """
+        Показує поточний статус обраного складу.
+        """
+        print(f"\n🏀 Обраний склад для матчу ({len(self.selected_lineup)}/5):")
+        if not self.selected_lineup:
+            print("  Склад порожній")
+        else:
+            for i, player in enumerate(self.selected_lineup, 1):
+                print(f"  {i}. {player.name} ({player.position}) - Коеф: {player.player_coef:.1f}")
+        print(f"💪 Сила обраного складу: {self.team_strength()}")
+        
 
     def __str__(self):
         """
@@ -109,14 +196,25 @@ class Team:
         Returns:
             str: Інформація про команду у зручному форматі.
         """
-        divider = "=" * 50
+        divider = "=" * 60
         header = f"🏀 Team: {self.team_name} 🏀"
         budget = f"💰 Budget: ${self.budget:,}"
-        strength = f"💪 Team Strength: {self.get_team_strength()}"
-        players_title = "🏀 Players:"
-        players_list = "\n".join([f"  - {player}" for player in self.players]) if self.players else "  No players in the team."
+        roster_info = f"👥 Full Roster: {len(self.players)} players"
+        lineup_info = f"⭐ Selected Lineup: {len(self.selected_lineup)}/5 players"
+        strength = f"💪 Team Strength (Selected): {self.get_team_strength()}"
+        
+        # Повний ростер
+        roster_title = "🏀 Full Roster:"
+        roster_list = "\n".join([f"  - {player}" for player in self.players]) if self.players else "  No players in the team."
+        
+        # Обраний склад
+        lineup_title = "\n⭐ Selected Lineup for Match:"
+        if self.selected_lineup:
+            lineup_list = "\n".join([f"  {i+1}. {player}" for i, player in enumerate(self.selected_lineup)])
+        else:
+            lineup_list = "  No players selected for match. Use auto-select or manual selection."
 
-        return f"\n{divider}\n{header}\n{divider}\n{budget}\n{strength}\n\n{players_title}\n{players_list}\n{divider}\n"
+        return f"\n{divider}\n{header}\n{divider}\n{budget}\n{roster_info}\n{lineup_info}\n{strength}\n\n{roster_title}\n{roster_list}\n{lineup_title}\n{lineup_list}\n{divider}\n"
 
 
 if __name__ == "__main__":

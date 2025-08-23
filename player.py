@@ -41,6 +41,26 @@ class Player:
         skill_sum = sum(stat_value * self.skill for stat_value in stats.values())
         self.player_coef = skill_sum * (1 - self.fatigue)
 
+    def increase_fatigue(self, amount=0.1):
+        """
+        Збільшує втому гравця після матчу.
+        
+        Parameters:
+            amount (float): Кількість втоми для додавання (за замовчуванням 0.1).
+        """
+        self.fatigue = min(1.0, self.fatigue + amount)
+        self.count_coef()  # Перераховуємо коефіцієнт після зміни втоми
+    
+    def decrease_fatigue(self, amount=0.3):
+        """
+        Зменшує втому гравця під час відпочинку.
+        
+        Parameters:
+            amount (float): Кількість втоми для зменшення (за замовчуванням 0.3).
+        """
+        self.fatigue = max(0.0, self.fatigue - amount)
+        self.count_coef()  # Перераховуємо коефіцієнт після зміни втоми
+
     def __str__(self):
         """
         Повертає строкове представлення гравця для зручного виводу.
