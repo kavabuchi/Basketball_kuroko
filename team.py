@@ -15,6 +15,10 @@ class Team:
         team_stats (dict): Заздалегідь задані характеристики деяких команд.
     """
     
+    # Константи класу
+    MAX_PLAYING_PLAYERS = 5
+    SELL_PRICE_RATIO = 0.5  # Команда отримує половину вартості при продажу гравця
+    
     team_stats = {
         "Bulls": 20,
         "Celtics": 15,
@@ -44,21 +48,12 @@ class Team:
         """
         return int(sum(player.player_coef for player in self.playing_players))
     
-    def get_team_strength(self):
-        """
-        Повертає загальну силу команди з урахуванням статистики.
-
-        Returns:
-            int: Загальна сила команди.
-        """
-        return self.team_stats.get(self.team_name, self.team_strength())
-    
     def add_player(self, player):
         """
         Додає гравця до складу команди.
 
         Parameters:
-            player (Player): Об’єкт гравця, якого потрібно додати.
+            player (Player): Об'єкт гравця, якого потрібно додати.
 
         Returns:
             bool: True, якщо гравця додано, False – якщо недостатньо бюджету.
@@ -66,7 +61,8 @@ class Team:
         if self.budget >= player.price:
             self.budget -= player.price
             self.all_players.append(player)
-            if len(self.playing_players) < 5:  # Автоматично додаємо до playing_players, якщо менше 5
+            # Автоматично додаємо до playing_players, якщо є місце
+            if len(self.playing_players) < self.MAX_PLAYING_PLAYERS:
                 self.playing_players.append(player)
             return True
         else:
@@ -78,13 +74,14 @@ class Team:
         Додає гравця до складу команди без списання бюджету.
 
         Parameters:
-            player (Player): Об’єкт гравця, якого потрібно додати.
+            player (Player): Об'єкт гравця, якого потрібно додати.
 
         Returns:
             bool: True, якщо гравця додано.
         """
         self.all_players.append(player)
-        if len(self.playing_players) < 5:  # Автоматично додаємо до playing_players, якщо менше 5
+        # Автоматично додаємо до playing_players, якщо є місце
+        if len(self.playing_players) < self.MAX_PLAYING_PLAYERS:
             self.playing_players.append(player)
         return True
     
@@ -99,7 +96,7 @@ class Team:
             bool: True, якщо гравця успішно продано, False – якщо гравця немає в команді.
         """
         if player in self.all_players:
-            self.budget += player.price // 2
+            self.budget += int(player.price * self.SELL_PRICE_RATIO)
             self.all_players.remove(player)
             if player in self.playing_players:
                 self.playing_players.remove(player)
@@ -113,7 +110,7 @@ class Team:
         Додає гравця до списку граючих гравців.
 
         Parameters:
-            player (Player): Об’єкт гравця, якого потрібно додати до гри.
+            player (Player): Об'єкт гравця, якого потрібно додати до гри.
 
         Returns:
             bool: True, якщо гравця додано, False – якщо гравця немає в команді або ліміт досягнуто.
@@ -121,7 +118,7 @@ class Team:
         if player not in self.all_players:
             print("You have not this player in your team!")
             return False
-        if len(self.playing_players) >= 5:
+        if len(self.playing_players) >= self.MAX_PLAYING_PLAYERS:
             print("You have already 5 players in your team!")
             return False
         if player in self.playing_players:
@@ -137,7 +134,7 @@ class Team:
         Видаляє гравця зі списку граючих гравців.
 
         Parameters:
-            player (Player): Об’єкт гравця, якого потрібно прибрати з гри.
+            player (Player): Об'єкт гравця, якого потрібно прибрати з гри.
 
         Returns:
             bool: True, якщо гравця видалено, False – якщо гравця немає в playing_players.
@@ -150,6 +147,24 @@ class Team:
             print("You have not this player in your playing team!")
             return False
     
+    def can_add_to_playing(self):
+        """
+        Перевіряє, чи можна додати гравця до граючого складу.
+        
+        Returns:
+            bool: True, якщо є місце для гравця.
+        """
+        return len(self.playing_players) < self.MAX_PLAYING_PLAYERS
+    
+    def get_available_players_for_rest(self):
+        """
+        Повертає список гравців, які можуть відпочивати.
+        
+        Returns:
+            list: Список гравців, які не грають зараз.
+        """
+        return [player for player in self.all_players if player not in self.playing_players]
+    
     def __str__(self):
         """
         Повертає строкове представлення команди з інформацією про склад та бюджет у красивому форматі.
@@ -160,7 +175,7 @@ class Team:
         divider = "═" * 60
         header = f"🏀 Team: {self.team_name} 🏀".center(60)
         budget = f"💰 Budget: ${self.budget:,}"
-        strength = f"💪 Team Strength: {self.get_team_strength()}"
+        strength = f"💪 Team Strength: {self.team_strength()}"
         players_title = "🏀 Players:"
         
         # Формуємо таблицю гравців
