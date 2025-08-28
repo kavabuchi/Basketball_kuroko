@@ -133,24 +133,40 @@ def buy_player(my_team, players):
 
     print_separator()
     print("Available Players:")
-    for player in players:
-        print(f"{player}")
+    if not players:
+        print("⚠️ No available players to buy!")
+        return
 
-    buy_player = input("\nEnter player name to buy: ").strip()
-    for player in players:
-        if buy_player == player.name:
-            if my_team.budget >= player.price:
-                if len(my_team.playing_players) < 5:
-                    my_team.add_player(player)
-                    players.remove(player)
-                    print(f"✅ You bought {player.name}. New budget: ${my_team.budget:,}")
-                else:
-                    print("⚠️ You already have 5 players.")
-            else:
-                print("⚠️ Not enough budget.")
+    print("╠════╤═══════════════════════════╤═════════════════╤═══════╤════════════╤══════════════╣")
+    for idx, player in enumerate(players):
+        print("║ {:<4} │ {:<25} │ {:<15} │ {:<5} │ {:<10.1f} │ {:<12,} ║".format(
+            idx + 1, player.name, player.position, player.age, player.player_coef, player.price
+        ))
+    print("╩════╧═══════════════════════════╧═════════════════╧═══════╧════════════╧══════════════╩")
+
+    buy_player_name = input("\nEnter player name to buy (or number 1-{}): ".format(len(players))).strip().lower()
+    player_to_buy = None
+    for idx, player in enumerate(players):
+        if buy_player_name.isdigit() and 1 <= int(buy_player_name) <= len(players):
+            if idx + 1 == int(buy_player_name):
+                player_to_buy = player
+                break
+        elif buy_player_name == player.name.lower():
+            player_to_buy = player
             break
     else:
         print("⚠️ Player not found.")
+        return
+
+    if my_team.budget >= player_to_buy.price:
+        if len(my_team.playing_players) < 5:
+            my_team.add_player(player_to_buy)
+            players.remove(player_to_buy)  # Безпечно видаляємо після завершення циклу
+            print(f"✅ You bought {player_to_buy.name}. New budget: ${my_team.budget:,}")
+        else:
+            print("⚠️ You already have 5 players.")
+    else:
+        print("⚠️ Not enough budget.")
 
 
 def sell_player(my_team, players):
@@ -203,6 +219,11 @@ def opponent_team(my_team, teams):
         if team.team_name == opponent_name and team != my_team:
             opponent = team
             break
+
+        for team in teams:
+            if team.team_name.lower() == opponent_name.lower().strip():
+                opponent = team
+                break
 
     if opponent is None:
         print("⚠️ No valid opponent team found!")
@@ -443,17 +464,90 @@ def rest_team(my_team):
     print("═" * 60)
 
 
-def managing_playing_players():
-    print("1️⃣  Choose the player for match")
-    print("2️⃣  Choose the player for rest")
+def select_playing_player(my_team):
+    print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
+    for idx, player in enumerate(my_team.all_players):
+        print(f"{idx+1}. Players: {len(my_team.all_players)}")
+        print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
+            player.name, player.position, player.player_coef, player.fatigue, player.price
+        ))
+    print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
+    
     while True:
-        choice = input("Enter your choice: 1 or 2: ")
+        try:
+            player_idx = int(input(f"\nChoose a player to manage with (1-{len(my_team.all_players)}): "))
+            if 1 <= player_idx <= len(my_team.all_players):
+                selected_player = my_team.all_players[player_idx - 1]  # Не видаляємо гравця зі списку
+            return my_team.select_player_for_playing(selected_player)
+                            
+        except ValueError:
+            print("❌ Please enter a valid number!")
+
+
+def remove_playing_player(my_team):
+    print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╣")
+    for idx, player in enumerate(my_team.all_players):
+        print(f"{idx+1}. Players: {len(my_team.all_players)}")
+        print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} ║".format(
+            player.name, player.position, player.player_coef, player.fatigue, player.price
+        ))
+    print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╩")
+
+    while True:
+        try:
+            player_idx_1 = int(input(f"\nChoose a player to manage with (1-{len(my_team.all_players)}): "))
+            if 1 <= player_idx_1 <= len(my_team.all_players):
+                selected_player_remove = my_team.all_players[player_idx_1 - 1]  # Не видаляємо гравця зі списку
+            return my_team.remove_player_from_playing(selected_player_remove)
+        
+        except ValueError:
+            print("❌ Please enter a valid number!")
+
+    
+def managing_playing_players(my_team):
+    if my_team is None:
+        print("⚠️ Create a team first!")
+        return
+
+    if not my_team.all_players:
+        print("⚠️ Your team has no players! Buy at least one player.")
+        return
+
+    print_separator()
+    print("═" * 60)
+    print("🏀 MANAGE PLAYING PLAYERS 🏀".center(60))
+    print("═" * 60)
+    print(f"👥 Team: {my_team.team_name}")
+    print(f"💪 Current Team Strength: {my_team.team_strength()}")
+    print(f"👥 Total Players: {len(my_team.all_players)} | Playing: {len(my_team.playing_players)}")
+    print("\nCurrent Players Status:")
+    print("║ {:<25} │ {:<15} │ {:<10} │ {:<12} │ {:<10} │ {:<10} ║".format(
+        "Name", "Position", "Coef", "Fatigue", "Price", "Status"
+    ))
+    print("╠═══════════════════════════╤═════════════════╤════════════╤══════════════╤════════════╤════════════╣")
+    for player in my_team.all_players:
+        status = "Playing" if player in my_team.playing_players else "Resting"
+        print("║ {:<25} │ {:<15} │ {:<10.1f} │ {:<12.2f} │ {:<10,} │ {:<10} ║".format(
+            player.name, player.position, player.player_coef, player.fatigue, player.price, status
+        ))
+    print("╩═══════════════════════════╧═════════════════╧════════════╧══════════════╧════════════╧════════════╩")
+    print("\n1️⃣  Choose a player for match")
+    print("2️⃣  Choose a player for rest")
+    print("❌  Exit")
+    print("═" * 70)
+
+    while True:
+        choice = input("Enter your choice (1, 2, or Exit): ").strip().lower()
         if choice == "1":
-            # Вибір гравця для гри
-            pass
-        if choice == "2":
-            # Вибір гравця для відпочинку
-            pass
+            select_playing_player(my_team)  # Виправлено назву методу
+        elif choice == "2":
+            remove_playing_player(my_team)  # Виправлено назву методу
+        elif choice == "exit":
+            print_main_menu()
+            break
+        else:
+            print("⚠️ Invalid choice. Please enter 1, 2, or Exit.")
+
 
 # === Головний цикл ===
 
@@ -496,6 +590,6 @@ if my_team is not None:
         elif command == "6":
             rest_team(my_team)
         elif command == "7":
-            managing_playing_players()
+            managing_playing_players(my_team)
         else:
             print("⚠️ Invalid command. Please try again.")

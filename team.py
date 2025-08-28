@@ -66,8 +66,6 @@ class Team:
         if self.budget >= player.price:
             self.budget -= player.price
             self.all_players.append(player)
-            if len(self.playing_players) < 5:  # Автоматично додаємо до playing_players, якщо менше 5
-                self.playing_players.append(player)
             return True
         else:
             print("Your budget is insufficient for this player!")
